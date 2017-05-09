@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">PopularMoviesOne</string>
+    <string name="error_message">An error has occured</string>
+    <string name="KEY1">see redacted section</string>
 </resources>

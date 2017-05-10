@@ -31,9 +31,28 @@ public final class JSONUtils {
         }
         try{
             JSONObject baseResponse = new JSONObject(jsonString);
-            JSONArray moviesArray = null;
-            Log.i(LOG_TAG, "base response " + baseResponse);
+            JSONArray resultsArray = null;
+            if(baseResponse.has("results")){
+                resultsArray = baseResponse.getJSONArray("results");
+            }else{
+                return movieArrayList;
+            }
 
+            for(int i = 0; i < resultsArray.length(); i++){
+
+                JSONObject movie = resultsArray.getJSONObject(i);
+                int movieID = movie.getInt("id");
+                String title = movie.getString("title");
+                String releaseDate = movie.getString("release_date");
+                String posterPath = movie.getString("poster_path");
+                int voteCount = movie.getInt("vote_count");
+                double voteAverage = movie.getDouble("vote_average");
+                double popularity = movie.getDouble("popularity");
+                String plot = movie.getString("overview");
+                Movie newMovie = new Movie(movieID, title, releaseDate, posterPath,
+                        voteCount, voteAverage, popularity, plot);
+                movieArrayList.add(newMovie);
+            }
         }catch (JSONException e){
             e.printStackTrace();
             Log.e(LOG_TAG, "Error Parsing JSON");

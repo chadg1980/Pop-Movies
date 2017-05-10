@@ -8,16 +8,56 @@ import android.media.Image;
 
 public class Movie {
 
+    private int movieID;
     private String title;
     private String releaseDate;
-    private byte[] poster;
-    String vote;
-    String plot;
-    public Movie(String title, String releaseDate, byte[] poster, String vote, String plot){
+    private String posterPath;
+    private int voteCount;
+    private double voteAverage;
+    private double popularity;
+    private String plot;
+
+    public Movie(int movieID, String title, String releaseDate,
+                 String posterPath, int voteCount, double voteAverage,
+                 double popularity, String plot){
+        this.movieID = movieID;
         this.title = title;
         this.releaseDate = releaseDate;
-        this.poster = poster;
-        this.vote = vote;
+        this.posterPath = posterPath;
+        this.voteCount = voteCount;
+        this.voteAverage = voteAverage;
         this.plot = plot;
+    }
+
+    public int getMovieID() {
+        return movieID;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getReleaseDate() {
+        return releaseDate;
+    }
+
+    public String getPosterPath() {
+        return posterPath;
+    }
+
+    public int getVoteCount() {
+        return voteCount;
+    }
+
+    public double getVoteAverage() {
+        return voteAverage;
+    }
+
+    public double getPopularity() {
+        return popularity;
+    }
+
+    public String getPlot() {
+        return plot;
     }
 }

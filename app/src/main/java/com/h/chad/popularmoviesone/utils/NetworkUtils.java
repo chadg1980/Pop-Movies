@@ -46,7 +46,7 @@ public class NetworkUtils {
     private static final String POPULAR = "popular";
     private static final String TOP_RATED = "top_rated";
 
-    private static final String API_KEY_VALUE = "Key1";
+    private static final String API_KEY_VALUE = "KEY1";
     private static final String LANGUAGE = "en-US";
 
     private static final String IMAGE_URL = "https://image.tmdb.org/t/p/w500";

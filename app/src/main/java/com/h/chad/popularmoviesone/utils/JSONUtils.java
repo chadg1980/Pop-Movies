@@ -24,13 +24,15 @@ public final class JSONUtils {
     private final static String LOG_TAG = JSONUtils.class.getName();
 
     public static ArrayList<Movie> getSimpleStringFromJson(Context context, String jsonString)
-        throws JSONException{
+            throws JSONException{
+
         ArrayList<Movie> movieArrayList= new ArrayList<>();
         if(TextUtils.isEmpty(jsonString)){
             return movieArrayList;
         }
         try{
             JSONObject baseResponse = new JSONObject(jsonString);
+            //Log.i(LOG_TAG, "Chad says: " + baseResponse);
             JSONArray resultsArray = null;
             if(baseResponse.has("results")){
                 resultsArray = baseResponse.getJSONArray("results");
@@ -52,6 +54,7 @@ public final class JSONUtils {
                 Movie newMovie = new Movie(movieID, title, releaseDate, posterPath,
                         voteCount, voteAverage, popularity, plot);
                 movieArrayList.add(newMovie);
+
             }
         }catch (JSONException e){
             e.printStackTrace();

@@ -46,29 +46,31 @@ public class NetworkUtils {
     private static final String POPULAR = "popular";
     private static final String TOP_RATED = "top_rated";
 
+    //Key1 is redcted for security purposes.
+    // A key can be aquired at https://www.themoviedb.org/documentation/api
     private static final String API_KEY_VALUE = "KEY1";
     private static final String LANGUAGE = "en-US";
 
-    private static final String IMAGE_URL = "https://image.tmdb.org/t/p/w500";
+    //private static final String IMAGE_URL = "https://image.tmdb.org/t/p/w500";
     private static final String POPULAR_URL = BASE_URL + POPULAR;
     private static final String TOP_RATED_URL = BASE_URL + TOP_RATED;
 
 
     //Params for the API call
     private static final String API_PARAM = "api_key";
-    private static final String LANGUAGE_PARAM = "language=";
-    private static final String PAGE_PARAM = "page=";
+    private static final String LANGUAGE_PARAM = "language";
+    private static final String PAGE_PARAM = "page";
 
 
 
-    public static URL popularUrl (int pages){
-
-        if(pages <=0 )pages = 1;
-        pages = 3;
+    public static URL popularUrl (int page){
+        if(page <= 0){
+            page = 1;
+        }
         Uri popularUri =  Uri.parse(TOP_RATED_URL).buildUpon()
                 .appendQueryParameter(API_PARAM, API_KEY_VALUE)
                 .appendQueryParameter(LANGUAGE_PARAM, LANGUAGE)
-                .appendQueryParameter(PAGE_PARAM, Integer.toString(pages))
+                .appendQueryParameter(PAGE_PARAM, Integer.toString(page))
                 .build();
         URL url = null;
         try {
@@ -80,11 +82,12 @@ public class NetworkUtils {
         }
         return url;
     }
-    public static URL top_ratedUrl (int pages){
-        if(pages <=0 )pages = 1;
+    public static URL top_ratedUrl (int page){
+        if(page<=0){
+            page = 1;
+        }
         Uri popularUri =  Uri.parse(TOP_RATED_URL).buildUpon()
                 .appendQueryParameter(LANGUAGE_PARAM, LANGUAGE)
-                .appendQueryParameter(PAGE_PARAM, Integer.toString(pages))
                 .appendQueryParameter(API_PARAM, API_KEY_VALUE)
                 .build();
         URL url = null;
@@ -100,14 +103,17 @@ public class NetworkUtils {
     }
 
     public static String getResponse(URL url) throws IOException{
+
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         try {
             InputStream is = urlConnection.getInputStream();
+
             Scanner scan = new Scanner(is);
             scan.useDelimiter("\\A");
 
             boolean hasInput = scan.hasNext();
             if(hasInput){
+
                 return scan.next();
             }else{
                 return null;

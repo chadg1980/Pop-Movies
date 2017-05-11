@@ -29,7 +29,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
     private static final String LOG_TAG = MovieAdapter.class.getName();
     private ArrayList<Movie> mMovie;
-    private static final String IMAGE_URL = "https://image.tmdb.org/t/p/w500";
+    private static final String IMAGE_URL = "https://image.tmdb.org/t/p/w342";
 
     public MovieAdapter(ArrayList<Movie> movie){
         this.mMovie = movie;

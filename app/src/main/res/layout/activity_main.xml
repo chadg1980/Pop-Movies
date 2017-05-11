@@ -10,7 +10,11 @@
         android:id="@+id/rv_Movies"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical"/>
+        android:scrollbars="vertical"
+        android:background="@color/colorAccent"
+        android:paddingBottom="0dp"
+
+        />
 
     <TextView
         android:id="@+id/tv_error_message"

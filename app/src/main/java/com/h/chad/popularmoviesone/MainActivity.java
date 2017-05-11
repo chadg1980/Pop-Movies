@@ -9,17 +9,26 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
+import android.util.StringBuilderPrinter;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.facebook.stetho.Stetho;
+import com.h.chad.popularmoviesone.utils.ItemDecoration;
 import com.h.chad.popularmoviesone.utils.JSONUtils;
 import com.h.chad.popularmoviesone.utils.NetworkUtils;
 
+import org.json.JSONException;
+
 import java.net.URL;
 import java.util.ArrayList;
+
+import static com.h.chad.popularmoviesone.utils.NetworkUtils.getResponse;
 
 
 //notes for picasso
@@ -63,27 +72,45 @@ public class MainActivity extends AppCompatActivity {
         }else {
             //END of connection check
 
-            LinearLayoutManager layoutManager =
+            /*LinearLayoutManager layoutManager =
                     new GridLayoutManager(mRecyclerView.getContext(), 2);
+            */
+            GridLayoutManager layoutManager =
+                    new GridLayoutManager(this, 4, GridLayoutManager.VERTICAL, false);
+            int spacingInPx = 5;
+            mRecyclerView.addItemDecoration(new ItemDecoration(spacingInPx));
             mRecyclerView.setLayoutManager(layoutManager);
             mRecyclerView.setHasFixedSize(true);
             loadMovies();
         }
-
     }
-
     private void loadMovies(){
         showData();
         //TODO 1 switch between POPULAR and TOP_RATED
 
-        new FetchMovieTask().execute("2");
+        new FetchMovieTask().execute();
     }
+    /*
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        int id = item.getItemId();
+
+        return super.onOptionsItemSelected(item);
+    }
+    */
 
     private void showData(){
         mErrorMessage.setVisibility(View.INVISIBLE);
         mRecyclerView.setVisibility(View.VISIBLE);
     }
     private void showErrorMessage(){
+        mLoadingIndicator.setVisibility(View.INVISIBLE);
         mRecyclerView.setVisibility(View.INVISIBLE);
         mErrorMessage.setVisibility(View.VISIBLE);
     }
@@ -101,29 +128,40 @@ public class MainActivity extends AppCompatActivity {
         }
         @Override
         protected ArrayList<Movie> doInBackground(String... params) {
+            URL movieRequestUrl;
 
-            if(params.length == 0){
-                params[0] = "2";
+            StringBuilder jsonMovieMultiPages = new StringBuilder();
+            ArrayList<Movie> simpleJsonMovieData = new ArrayList<>();
+            for(int page = 1; page<5;page++){
+                movieRequestUrl = NetworkUtils.popularUrl(page);
+
+                try{
+
+                    String jsonMovieResponse = NetworkUtils.getResponse(movieRequestUrl);
+                    if(page == 1) {
+                        simpleJsonMovieData =
+                                JSONUtils.getSimpleStringFromJson(MainActivity.this, jsonMovieResponse);
+                    }else{
+                        simpleJsonMovieData.addAll(JSONUtils.getSimpleStringFromJson(MainActivity.this, jsonMovieResponse));
+                    }
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                    Log.e(LOG_TAG, "Fetch Error ");
+                    return null;
+                }
             }
-            String pageString = params[0];
-            URL movieRequestUrl = NetworkUtils.popularUrl(Integer.valueOf(pageString));
 
-            try {
-                String jsonMovieResponse = NetworkUtils.getResponse(movieRequestUrl);
-                ArrayList<Movie> simpleJsonMovieData =
-                        JSONUtils.getSimpleStringFromJson(MainActivity.this, jsonMovieResponse);
-                return simpleJsonMovieData;
-
-            }catch (Exception e){
-                e.printStackTrace();
-                Log.e(LOG_TAG, "Fetch Error ");
-                return null;
-            }
+            return simpleJsonMovieData;
         }
         protected void onPostExecute(ArrayList<Movie> movies){
-            mLoadingIndicator.setVisibility(View.INVISIBLE);
-            mMovieAdapter = new MovieAdapter(movies);
-            mRecyclerView.setAdapter(mMovieAdapter);
+            if(movies == null){
+                showErrorMessage();
+            }else {
+                mLoadingIndicator.setVisibility(View.INVISIBLE);
+                mMovieAdapter = new MovieAdapter(movies);
+                mRecyclerView.setAdapter(mMovieAdapter);
+            }
         }
     }
 }

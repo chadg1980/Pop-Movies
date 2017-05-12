@@ -1,12 +1,16 @@
 package com.h.chad.popularmoviesone.utils;
 
+import android.app.Application;
 import android.app.DownloadManager;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.Log;
 import android.view.View;
+import android.widget.Switch;
 
+import com.h.chad.popularmoviesone.MainActivity;
 import com.h.chad.popularmoviesone.R;
 import com.squareup.picasso.Request;
 import com.squareup.picasso.Request.Builder;
@@ -18,6 +22,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
+
+import static android.R.id.list;
+import static android.os.Build.VERSION_CODES.M;
 
 /**
  * Created by chad on 5/8/2017.
@@ -43,17 +50,14 @@ public class NetworkUtils {
 
     private static final String LOG_TAG = NetworkUtils.class.getName();
     private static final String BASE_URL = "https://api.themoviedb.org/3/movie/";
-    private static final String POPULAR = "popular";
-    private static final String TOP_RATED = "top_rated";
 
-    //Key1 is redcted for security purposes.
-    // A key can be aquired at https://www.themoviedb.org/documentation/api
-    private static final String API_KEY_VALUE = "KEY1";
+
+
     private static final String LANGUAGE = "en-US";
 
     //private static final String IMAGE_URL = "https://image.tmdb.org/t/p/w500";
-    private static final String POPULAR_URL = BASE_URL + POPULAR;
-    private static final String TOP_RATED_URL = BASE_URL + TOP_RATED;
+    //private static final String POPULAR_URL = BASE_URL + POPULAR;
+    //private static final String TOP_RATED_URL = BASE_URL + TOP_RATED;
 
 
     //Params for the API call
@@ -61,39 +65,24 @@ public class NetworkUtils {
     private static final String LANGUAGE_PARAM = "language";
     private static final String PAGE_PARAM = "page";
 
+    //Empty Constructor
+    public NetworkUtils(){
 
+    }
 
-    public static URL popularUrl (int page){
+    public static URL getMoviesUrl (int page, String apiKeyValue, String listType){
+        String fullUrl = BASE_URL + listType;
         if(page <= 0){
             page = 1;
         }
-        Uri popularUri =  Uri.parse(TOP_RATED_URL).buildUpon()
-                .appendQueryParameter(API_PARAM, API_KEY_VALUE)
+         Uri getMovies =  Uri.parse(fullUrl).buildUpon()
+                .appendQueryParameter(API_PARAM, apiKeyValue)
                 .appendQueryParameter(LANGUAGE_PARAM, LANGUAGE)
                 .appendQueryParameter(PAGE_PARAM, Integer.toString(page))
                 .build();
         URL url = null;
         try {
-            url = new URL( popularUri.toString());
-
-        }catch (MalformedURLException e){
-            e.printStackTrace();
-            Log.e(LOG_TAG, "buildPopularUrl has an error: " + url);
-        }
-        return url;
-    }
-    public static URL top_ratedUrl (int page){
-        if(page<=0){
-            page = 1;
-        }
-        Uri popularUri =  Uri.parse(TOP_RATED_URL).buildUpon()
-                .appendQueryParameter(LANGUAGE_PARAM, LANGUAGE)
-                .appendQueryParameter(API_PARAM, API_KEY_VALUE)
-                .build();
-        URL url = null;
-
-        try {
-            url = new URL( popularUri.toString());
+            url = new URL( getMovies.toString());
 
         }catch (MalformedURLException e){
             e.printStackTrace();

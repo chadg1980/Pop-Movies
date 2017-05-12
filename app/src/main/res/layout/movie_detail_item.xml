@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tv_movie_title"
+        android:layout_width="wrap_content"
+        android:layout_height="300px"
+        android:textSize="35dp"
+        android:gravity="center_vertical"
+        android:background="@color/colorBlack"
+        android:textColor="@color/colorWhite"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:paddingLeft="40px"
+        android:layout_marginBottom="20px"/>
+
+    <RatingBar
+        android:id="@+id/rb_vote_average"
+        android:paddingLeft="40px"
+        android:paddingRight="40px"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_movie_title"
+        android:numStars="10"
+        android:stepSize="0.25"
+        android:layout_marginBottom="20px"/>
+    <TextView
+        android:id="@+id/tv_average"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_below="@+id/rb_vote_average"
+        android:layout_marginBottom="20px"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"/>
+
+    <ImageView
+        android:id="@+id/detail_poster"
+        android:layout_below="@+id/tv_average"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="40px"
+        android:layout_marginBottom="20px"/>
+    <TextView
+        android:id="@+id/tv_release_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="60px"
+        android:layout_toRightOf="@+id/detail_poster"
+        android:layout_below="@+id/tv_average"
+        android:textColor="@color/colorPrimary"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"/>
+
+    <TextView
+        android:id="@+id/tv_plot"
+        android:paddingLeft="40px"
+        android:paddingRight="40px"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/detail_poster"/>
+
+
+
+
+
+</RelativeLayout>

@@ -1,17 +1,15 @@
 package com.h.chad.popularmoviesone;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
-import android.util.StringBuilderPrinter;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,23 +21,25 @@ import com.h.chad.popularmoviesone.utils.ItemDecoration;
 import com.h.chad.popularmoviesone.utils.JSONUtils;
 import com.h.chad.popularmoviesone.utils.NetworkUtils;
 
-import org.json.JSONException;
-
 import java.net.URL;
 import java.util.ArrayList;
 
-import static com.h.chad.popularmoviesone.utils.NetworkUtils.getResponse;
-
-
-//notes for picasso
-//Picasso.with(context).load("http://i.imgur.com/DvpvklR.png").into(imageView);
 public class MainActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = MainActivity.class.getName();
+    private static final String POPULAR = "popular";
+    private final static String TOP_RATED = "top_rated";
+
     private RecyclerView mRecyclerView;
     private MovieAdapter mMovieAdapter;
     private ProgressBar mLoadingIndicator;
     private TextView mErrorMessage;
+    private String mListType;
+
+
+    //Key1 is redcted for security purposes.
+    // A key can be aquired at https://www.themoviedb.org/documentation/api
+    private  String mApiPrivateKey;
 
 
     @Override
@@ -52,6 +52,12 @@ public class MainActivity extends AppCompatActivity {
         mLoadingIndicator.setVisibility(View.VISIBLE);
         mErrorMessage = (TextView) findViewById(R.id.tv_error_message);
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_Movies);
+        //This value will be redacted
+        //To use this app, you will need to find a key at
+        //https://www.themoviedb.org/documentation/api
+        mApiPrivateKey = context.getString(R.string.KEY1);
+        //making popular by default so no null values get sent to the API call
+        mListType = POPULAR;
 
         //Stetho debug tools
         Stetho.initialize(
@@ -72,9 +78,6 @@ public class MainActivity extends AppCompatActivity {
         }else {
             //END of connection check
 
-            /*LinearLayoutManager layoutManager =
-                    new GridLayoutManager(mRecyclerView.getContext(), 2);
-            */
             GridLayoutManager layoutManager =
                     new GridLayoutManager(this, 4, GridLayoutManager.VERTICAL, false);
             int spacingInPx = 5;
@@ -86,24 +89,33 @@ public class MainActivity extends AppCompatActivity {
     }
     private void loadMovies(){
         showData();
-        //TODO 1 switch between POPULAR and TOP_RATED
-
         new FetchMovieTask().execute();
     }
-    /*
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
 
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.settings, menu);
         return true;
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         int id = item.getItemId();
-
+        //The api can call popular or top rated
+        switch (id){
+            case R.id.sortPopular:
+                mListType = POPULAR;
+                break;
+            case R.id.sortTopRated:
+                mListType = TOP_RATED;
+                break;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+        loadMovies();
         return super.onOptionsItemSelected(item);
     }
-    */
 
     private void showData(){
         mErrorMessage.setVisibility(View.INVISIBLE);
@@ -133,33 +145,33 @@ public class MainActivity extends AppCompatActivity {
             StringBuilder jsonMovieMultiPages = new StringBuilder();
             ArrayList<Movie> simpleJsonMovieData = new ArrayList<>();
             for(int page = 1; page<5;page++){
-                movieRequestUrl = NetworkUtils.popularUrl(page);
-
+                movieRequestUrl = NetworkUtils.getMoviesUrl(page, mApiPrivateKey, mListType);
                 try{
-
                     String jsonMovieResponse = NetworkUtils.getResponse(movieRequestUrl);
                     if(page == 1) {
                         simpleJsonMovieData =
-                                JSONUtils.getSimpleStringFromJson(MainActivity.this, jsonMovieResponse);
+                                JSONUtils.getSimpleStringFromJson(
+                                        MainActivity.this, jsonMovieResponse);
                     }else{
-                        simpleJsonMovieData.addAll(JSONUtils.getSimpleStringFromJson(MainActivity.this, jsonMovieResponse));
+                        simpleJsonMovieData.addAll(
+                                JSONUtils.getSimpleStringFromJson(
+                                        MainActivity.this, jsonMovieResponse));
                     }
-
                 }catch (Exception e){
                     e.printStackTrace();
                     Log.e(LOG_TAG, "Fetch Error ");
                     return null;
                 }
             }
-
             return simpleJsonMovieData;
         }
+
         protected void onPostExecute(ArrayList<Movie> movies){
             if(movies == null){
                 showErrorMessage();
             }else {
                 mLoadingIndicator.setVisibility(View.INVISIBLE);
-                mMovieAdapter = new MovieAdapter(movies);
+                mMovieAdapter = new MovieAdapter(movies, getApplicationContext());
                 mRecyclerView.setAdapter(mMovieAdapter);
             }
         }

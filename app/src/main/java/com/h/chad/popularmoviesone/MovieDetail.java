@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -19,7 +21,6 @@ import static com.h.chad.popularmoviesone.MovieAdapter.MOVIE_VOTE_AVERAGE;
 import static com.h.chad.popularmoviesone.MovieAdapter.MOVIE_POSTER_PATH;
 import static com.h.chad.popularmoviesone.MovieAdapter.MOVIE_PLOT;
 
-
 /**
  * Created by chad on 5/11/2017.
  */
@@ -32,7 +33,7 @@ public class MovieDetail extends AppCompatActivity{
     RatingBar mRB_movieVoteAverage;
     TextView mTV_movieVoteAverage;
     TextView mTV_moviePlot;
-    private static final String DETAIL_IMAGE_URL = "https://image.tmdb.org/t/p/w500";
+    private final static String LOG_TAG = MovieDetail.class.getName();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,20 +58,17 @@ public class MovieDetail extends AppCompatActivity{
         mTV_moviePlot = (TextView) findViewById(R.id.tv_plot);
         mTV_movieVoteAverage = (TextView) findViewById(R.id.tv_average);
 
+        String totalUrl = MovieAdapter.IMAGE_URL + moviePosterPath;
+        Picasso.with(context).load(totalUrl).into(mIV_moviePoster);
         mTV_movieVoteAverage.setText(averageVotes);
         mTV_movieTitle.setText(movieTitle);
         mTV_movieReleaseDate.setText(parseYear(movieReleaseDate));
         mRB_movieVoteAverage.setRating( movieVoteAverage.floatValue() );
         mTV_moviePlot.setText(moviePlot);
-
-        String totalUrl = MovieAdapter.IMAGE_URL + moviePosterPath;
-        Picasso.with(context).load(totalUrl).into(mIV_moviePoster);
-
-
     }
 
     private String parseYear(String inDate){
         String outdate[] = inDate.split("-");
-        return outdate[0];
+        return getString(R.string.release_year) + " " + outdate[0];
     }
 }

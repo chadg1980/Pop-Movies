@@ -16,7 +16,8 @@ public class Movie {
     private double voteAverage;
     private double popularity;
     private String plot;
-
+    //All the data from the API that we may or may not need
+    //I did not find the running time like the example
     public Movie(int movieID, String title, String releaseDate,
                  String posterPath, int voteCount, double voteAverage,
                  double popularity, String plot){

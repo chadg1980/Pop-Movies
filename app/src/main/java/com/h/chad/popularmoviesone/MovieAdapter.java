@@ -39,14 +39,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     public final static String MOVIE_VOTE_AVERAGE = "MOVIE_VOTE_AVERAGE";
     public final static String MOVIE_PLOT = "MOVIE_PLOT";
     public static final String IMAGE_URL = "https://image.tmdb.org/t/p/w342";
-
-
-
-
     private ArrayList<Movie> mMovie;
-
     private Context mContext;
-
 
     public MovieAdapter(ArrayList<Movie> movie, Context context){
         this.mMovie = movie;
@@ -59,8 +53,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         int layoutIdForRecyclerViewItem = R.layout.recyclerview_item;
         LayoutInflater inflater = LayoutInflater.from(mContext);
         boolean attachToParentImmediatly = false;
-
-
         View view = inflater.inflate(layoutIdForRecyclerViewItem, parent, attachToParentImmediatly);
         MovieAdapterViewHolder viewHolder = new MovieAdapterViewHolder(view);
         return viewHolder;
@@ -77,7 +69,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
                 String posterPath = mMovie.get(position).getPosterPath();
                 double movieVoteAverage = mMovie.get(position).getVoteAverage();
                 String moviePlot = mMovie.get(position).getPlot();
-
 
                 intent.putExtra(MOVIE_TITLE, movieTitle);
                 intent.putExtra(MOVIE_RELEASE_DATE, movieReleaseDate);
@@ -98,12 +89,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     class MovieAdapterViewHolder extends RecyclerView.ViewHolder {
         ImageView mPoster;
 
-
         public MovieAdapterViewHolder(View itemView) {
             super(itemView);
             mPoster = (ImageView)itemView.findViewById(R.id.rv_poster);
-
-
         }
         void bind(int listIndex){
             Context context = itemView.getContext();
@@ -111,9 +99,5 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
             String totalUrl = IMAGE_URL + poster;
             Picasso.with(context).load(totalUrl).into(mPoster);
         }
-
-
     }
-
-
 }

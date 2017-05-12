@@ -31,34 +31,12 @@ import static android.os.Build.VERSION_CODES.M;
  */
 
 public class NetworkUtils {
-    //Key1 and Key2 can be aquired from api.themoviedb.org
-    //API Key (v3 auth)
-
-    //API Redeacted Access Token (v4 auth)
-
-    //example api request
-    //https://api.themoviedb.org/3/movie/550?api_key=KEY1
-
-    //example api for popular
-    // https://api.themoviedb.org/3/movie/popular?api_key=KEY1&language=en-US&page=1
-
-    //example api for top_rated
-    // https://api.themoviedb.org/3/movie/top_rated?api_key=KEY1&language=en-US&page=1
-
-    //example of movie poster
-    // https://image.tmdb.org/t/p/w500/kqjL17yufvn9OVLyXYpvtyrFfak.jpg
 
     private static final String LOG_TAG = NetworkUtils.class.getName();
     private static final String BASE_URL = "https://api.themoviedb.org/3/movie/";
-
-
-
     private static final String LANGUAGE = "en-US";
-
-    //private static final String IMAGE_URL = "https://image.tmdb.org/t/p/w500";
-    //private static final String POPULAR_URL = BASE_URL + POPULAR;
-    //private static final String TOP_RATED_URL = BASE_URL + TOP_RATED;
-
+    public static final String POPULAR = "popular";
+    public final static String TOP_RATED = "top_rated";
 
     //Params for the API call
     private static final String API_PARAM = "api_key";
@@ -86,13 +64,12 @@ public class NetworkUtils {
 
         }catch (MalformedURLException e){
             e.printStackTrace();
-            Log.e(LOG_TAG, "buildPopularUrl has an error: " + url);
+            Log.e(LOG_TAG, "buildPopularUrl has an error");
         }
         return url;
     }
 
     public static String getResponse(URL url) throws IOException{
-
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         try {
             InputStream is = urlConnection.getInputStream();

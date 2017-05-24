@@ -1,4 +1,4 @@
-package com.h.chad.popularmoviesone;
+package com.h.chad.PopMovies;
 
 import org.junit.Test;
 

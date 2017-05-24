@@ -1,10 +1,10 @@
-package com.h.chad.popularmoviesone.utils;
+package com.h.chad.PopMovies.utils;
 
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.h.chad.popularmoviesone.Movie;
+import com.h.chad.PopMovies.Movie;
 
 import org.json.JSONArray;
 import org.json.JSONException;

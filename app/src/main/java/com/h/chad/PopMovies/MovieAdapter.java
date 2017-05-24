@@ -1,4 +1,4 @@
-package com.h.chad.popularmoviesone;
+package com.h.chad.PopMovies;
 
 
 import android.content.Context;
@@ -13,7 +13,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.h.chad.popularmoviesone.utils.NetworkUtils;
+import com.h.chad.popmovies.R;
+import com.h.chad.PopMovies.MovieDetail;
+import com.h.chad.PopMovies.utils.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;

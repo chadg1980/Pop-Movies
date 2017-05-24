@@ -1,4 +1,4 @@
-package com.h.chad.popularmoviesone;
+package com.h.chad.PopMovies;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,21 +11,27 @@ import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.h.chad.popmovies.R;
 import com.squareup.picasso.Picasso;
 
 import static android.R.id.message;
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
-import static com.h.chad.popularmoviesone.MovieAdapter.MOVIE_TITLE;
-import static com.h.chad.popularmoviesone.MovieAdapter.MOVIE_RELEASE_DATE;
-import static com.h.chad.popularmoviesone.MovieAdapter.MOVIE_VOTE_AVERAGE;
-import static com.h.chad.popularmoviesone.MovieAdapter.MOVIE_POSTER_PATH;
-import static com.h.chad.popularmoviesone.MovieAdapter.MOVIE_PLOT;
+import static com.h.chad.PopMovies.MovieAdapter.MOVIE_PLOT;
+import static com.h.chad.PopMovies.MovieAdapter.MOVIE_POSTER_PATH;
+import static com.h.chad.PopMovies.MovieAdapter.MOVIE_RELEASE_DATE;
+import static com.h.chad.PopMovies.MovieAdapter.MOVIE_TITLE;
+import static com.h.chad.PopMovies.MovieAdapter.MOVIE_VOTE_AVERAGE;
+
+
+
+
+
 
 /**
  * Created by chad on 5/11/2017.
  */
 
-public class MovieDetail extends AppCompatActivity{
+public class MovieDetail extends AppCompatActivity {
 
     TextView mTV_movieTitle;
     ImageView mIV_moviePoster;
@@ -51,23 +57,23 @@ public class MovieDetail extends AppCompatActivity{
         String outOfTen = this.getString(R.string.average_out_of_ten);
         String averageVotes = Double.toString(movieVoteAverage) + outOfTen;
 
-        mTV_movieTitle = (TextView)findViewById(R.id.tv_movie_title);
-        mIV_moviePoster = (ImageView)findViewById(R.id.detail_poster);
+        mTV_movieTitle = (TextView) findViewById(R.id.tv_movie_title);
+        mIV_moviePoster = (ImageView) findViewById(R.id.detail_poster);
         mTV_movieReleaseDate = (TextView) findViewById(R.id.tv_release_date);
         mRB_movieVoteAverage = (RatingBar) findViewById(R.id.rb_vote_average);
         mTV_moviePlot = (TextView) findViewById(R.id.tv_plot);
         mTV_movieVoteAverage = (TextView) findViewById(R.id.tv_average);
 
-        String totalUrl = MovieAdapter.IMAGE_URL + moviePosterPath;
+        String totalUrl = com.h.chad.PopMovies.MovieAdapter.IMAGE_URL + moviePosterPath;
         Picasso.with(context).load(totalUrl).into(mIV_moviePoster);
         mTV_movieVoteAverage.setText(averageVotes);
         mTV_movieTitle.setText(movieTitle);
         mTV_movieReleaseDate.setText(parseYear(movieReleaseDate));
-        mRB_movieVoteAverage.setRating( movieVoteAverage.floatValue() );
+        mRB_movieVoteAverage.setRating(movieVoteAverage.floatValue());
         mTV_moviePlot.setText(moviePlot);
     }
 
-    private String parseYear(String inDate){
+    private String parseYear(String inDate) {
         String outdate[] = inDate.split("-");
         return getString(R.string.release_year) + " " + outdate[0];
     }

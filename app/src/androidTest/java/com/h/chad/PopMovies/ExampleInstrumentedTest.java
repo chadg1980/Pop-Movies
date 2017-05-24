@@ -1,4 +1,4 @@
-package com.h.chad.popularmoviesone;
+package com.h.chad.PopMovies;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.h.chad.popularmoviesone", appContext.getPackageName());
+        assertEquals("com.h.chad.PopMovies", appContext.getPackageName());
     }
 }

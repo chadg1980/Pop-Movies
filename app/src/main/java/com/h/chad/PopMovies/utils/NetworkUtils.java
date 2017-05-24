@@ -1,4 +1,4 @@
-package com.h.chad.popularmoviesone.utils;
+package com.h.chad.PopMovies.utils;
 
 import android.app.Application;
 import android.app.DownloadManager;
@@ -10,10 +10,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Switch;
 
-import com.h.chad.popularmoviesone.MainActivity;
-import com.h.chad.popularmoviesone.R;
-import com.squareup.picasso.Request;
-import com.squareup.picasso.Request.Builder;
 
 
 import java.io.IOException;

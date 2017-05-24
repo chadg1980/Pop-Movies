@@ -1,4 +1,4 @@
-package com.h.chad.popularmoviesone;
+package com.h.chad.PopMovies;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,9 +17,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.facebook.stetho.Stetho;
-import com.h.chad.popularmoviesone.utils.ItemDecoration;
-import com.h.chad.popularmoviesone.utils.JSONUtils;
-import com.h.chad.popularmoviesone.utils.NetworkUtils;
+import com.h.chad.PopMovies.MovieAdapter;
+import com.h.chad.PopMovies.utils.ItemDecoration;
+import com.h.chad.PopMovies.utils.JSONUtils;
+import com.h.chad.PopMovies.utils.NetworkUtils;
+import com.h.chad.popmovies.R;
 
 import java.net.URL;
 import java.util.ArrayList;

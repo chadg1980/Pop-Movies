@@ -1,4 +1,4 @@
-package com.h.chad.popularmoviesone.utils;
+package com.h.chad.PopMovies.utils;
 
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;

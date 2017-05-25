@@ -27,7 +27,7 @@ import static com.h.chad.PopMovies.MovieAdapter.MOVIE_VOTE_AVERAGE;
 /**
  * Created by chad on 5/11/2017.
  */
-//todo 501 rename Movie Detail something more appropriate
+
 public class MovieDetailActivity extends AppCompatActivity {
 
     /*butterknife binding */

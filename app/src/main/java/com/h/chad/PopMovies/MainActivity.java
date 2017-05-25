@@ -1,15 +1,12 @@
 package com.h.chad.PopMovies;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +15,7 @@ import android.widget.TextView;
 
 import com.facebook.stetho.Stetho;
 import com.h.chad.PopMovies.MovieAdapter;
+import com.h.chad.PopMovies.utils.FetchMovieTask;
 import com.h.chad.PopMovies.utils.ItemDecoration;
 import com.h.chad.PopMovies.utils.JSONUtils;
 import com.h.chad.PopMovies.utils.NetworkUtils;
@@ -25,6 +23,8 @@ import com.h.chad.PopMovies.R;
 
 import java.net.URL;
 import java.util.ArrayList;
+
+import butterknife.BindView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar mLoadingIndicator;
     private TextView mErrorMessage;
     private String mListType;
+    private Context mContext;
 
 
     //Key is redcted for security purposes.
@@ -44,17 +45,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
         final Context context = getApplicationContext();
+        mContext = context;
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_bar);
-        mLoadingIndicator.setVisibility(View.VISIBLE);
+                mLoadingIndicator.setVisibility(View.VISIBLE);
         mErrorMessage = (TextView) findViewById(R.id.tv_error_message);
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_Movies);
         //This value will be redacted
         //To use this app, you will need to find a key at
         //https://www.themoviedb.org/documentation/api
         mApiPrivateKey = context.getString(R.string.KEY1);
+
         //making popular by default so no null values get sent to the API call
         if(mListType == null){
             mListType = NetworkUtils.POPULAR;
@@ -73,8 +75,7 @@ public class MainActivity extends AppCompatActivity {
             showNetworkError();
 
         }else {
-            //END of connection check
-
+            //If connection is good, we set up the recycler view then load the movies
             setupRecyclerView();
             loadMovies();
         }
@@ -96,7 +97,8 @@ public class MainActivity extends AppCompatActivity {
     }
     private void loadMovies(){
         showData();
-        new FetchMovieTask().execute();
+
+        new FetchMovieTask(mContext, mLoadingIndicator, mRecyclerView, mListType).execute();
     }
 
     //Create the options menu
@@ -130,12 +132,12 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
     //Shows the data, makes errormessage invisible
-    private void showData(){
+    public void showData(){
         mErrorMessage.setVisibility(View.INVISIBLE);
         mRecyclerView.setVisibility(View.VISIBLE);
     }
     //Show the error message
-    private void showErrorMessage(){
+    public void showErrorMessage(){
         mLoadingIndicator.setVisibility(View.INVISIBLE);
         mRecyclerView.setVisibility(View.INVISIBLE);
         mErrorMessage.setVisibility(View.VISIBLE);
@@ -146,50 +148,5 @@ public class MainActivity extends AppCompatActivity {
         mErrorMessage.setText(R.string.network_error);
         mErrorMessage.setVisibility(View.VISIBLE);
     }
-    //todo 500 move AsycTask to seperate Class File
-    //Async task call in a background thread
-    private class FetchMovieTask extends AsyncTask<String, Void, ArrayList<Movie>> {
-        @Override
-        protected void onPreExecute(){
-            super.onPreExecute();
-            mLoadingIndicator.setVisibility(View.VISIBLE);
-        }
-        @Override
-        protected ArrayList<Movie> doInBackground(String... params) {
-            URL movieRequestUrl;
-            ArrayList<Movie> simpleJsonMovieData = new ArrayList<>();
-            //We get the first 5 pages from the API
-            //The more we get the lower quality poster we need to use
-            for(int page = 1; page<5;page++){
-                movieRequestUrl = NetworkUtils.getMoviesUrl(page, mApiPrivateKey, mListType);
-                try{
-                    String jsonMovieResponse = NetworkUtils.getResponse(movieRequestUrl);
-                    if(page == 1) {
-                        simpleJsonMovieData =
-                                JSONUtils.getSimpleStringFromJson(
-                                        MainActivity.this, jsonMovieResponse);
-                    }else{
-                        simpleJsonMovieData.addAll(
-                                JSONUtils.getSimpleStringFromJson(
-                                        MainActivity.this, jsonMovieResponse));
-                    }
-                }catch (Exception e){
-                    e.printStackTrace();
-                    Log.e(LOG_TAG, "Fetch Error ");
-                    return null;
-                }
-            }
-            return simpleJsonMovieData;
-        }
 
-        protected void onPostExecute(ArrayList<Movie> movies){
-            if(movies == null){
-                showErrorMessage();
-            }else {
-                mLoadingIndicator.setVisibility(View.INVISIBLE);
-                mMovieAdapter = new MovieAdapter(movies, getApplicationContext());
-                mRecyclerView.setAdapter(mMovieAdapter);
-            }
-        }
-    }
 }

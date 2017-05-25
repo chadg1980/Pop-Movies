@@ -21,7 +21,7 @@ import com.h.chad.PopMovies.MovieAdapter;
 import com.h.chad.PopMovies.utils.ItemDecoration;
 import com.h.chad.PopMovies.utils.JSONUtils;
 import com.h.chad.PopMovies.utils.NetworkUtils;
-import com.h.chad.popmovies.R;
+import com.h.chad.PopMovies.R;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
             mListType = NetworkUtils.POPULAR;
         }
 
-
         //Stetho debug tools
         Stetho.initialize(
                 Stetho.newInitializerBuilder(context)
@@ -76,12 +75,7 @@ public class MainActivity extends AppCompatActivity {
         }else {
             //END of connection check
 
-            GridLayoutManager layoutManager =
-                    new GridLayoutManager(this, 4, GridLayoutManager.VERTICAL, false);
-            int spacingInPx = 5;
-            mRecyclerView.addItemDecoration(new ItemDecoration(spacingInPx));
-            mRecyclerView.setLayoutManager(layoutManager);
-            mRecyclerView.setHasFixedSize(true);
+            setupRecyclerView();
             loadMovies();
         }
     }
@@ -92,6 +86,14 @@ public class MainActivity extends AppCompatActivity {
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         return(activeNetwork != null && activeNetwork.isConnectedOrConnecting());
     }
+    private void setupRecyclerView(){
+        GridLayoutManager layoutManager =
+                new GridLayoutManager(this, 4, GridLayoutManager.VERTICAL, false);
+        int spacingInPx = 5;
+        mRecyclerView.addItemDecoration(new ItemDecoration(spacingInPx));
+        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setHasFixedSize(true);
+    }
     private void loadMovies(){
         showData();
         new FetchMovieTask().execute();
@@ -100,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
     //Create the options menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
-
         getMenuInflater().inflate(R.menu.settings, menu);
         return true;
     }
@@ -120,8 +121,10 @@ public class MainActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
         boolean isConnected = checkConnection();
-        if(isConnected)
+        if(isConnected) {
+            setupRecyclerView();
             loadMovies();
+        }
         else
             showNetworkError();
         return super.onOptionsItemSelected(item);
@@ -143,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
         mErrorMessage.setText(R.string.network_error);
         mErrorMessage.setVisibility(View.VISIBLE);
     }
+    //todo 500 move AsycTask to seperate Class File
     //Async task call in a background thread
     private class FetchMovieTask extends AsyncTask<String, Void, ArrayList<Movie>> {
         @Override

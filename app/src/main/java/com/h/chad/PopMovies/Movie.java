@@ -6,6 +6,11 @@ import android.media.Image;
  * Created by chad on 5/8/2017.
  */
 
+// todo 101 look into using a parcelabel
+    //https://guides.codepath.com/android/using-parcelable
+    //https://www.101apps.co.za/index.php/articles/using-android-s-parcelable-class-a-tutorial.html
+    //blog.prolificinteractive.com/2014/07/18/why-we-love-parcelable/
+
 public class Movie {
 
     private int movieID;

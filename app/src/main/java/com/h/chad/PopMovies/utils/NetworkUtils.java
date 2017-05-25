@@ -1,16 +1,7 @@
 package com.h.chad.PopMovies.utils;
 
-import android.app.Application;
-import android.app.DownloadManager;
-import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.Log;
-import android.view.View;
-import android.widget.Switch;
-
-
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,8 +10,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
 
-import static android.R.id.list;
-import static android.os.Build.VERSION_CODES.M;
 
 /**
  * Created by chad on 5/8/2017.

@@ -11,11 +11,12 @@ import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.h.chad.popmovies.R;
+import com.h.chad.PopMovies.R;
 import com.squareup.picasso.Picasso;
 
-import static android.R.id.message;
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static com.h.chad.PopMovies.MovieAdapter.MOVIE_PLOT;
 import static com.h.chad.PopMovies.MovieAdapter.MOVIE_POSTER_PATH;
 import static com.h.chad.PopMovies.MovieAdapter.MOVIE_RELEASE_DATE;
@@ -23,28 +24,27 @@ import static com.h.chad.PopMovies.MovieAdapter.MOVIE_TITLE;
 import static com.h.chad.PopMovies.MovieAdapter.MOVIE_VOTE_AVERAGE;
 
 
-
-
-
-
 /**
  * Created by chad on 5/11/2017.
  */
+//todo 501 rename Movie Detail something more appropriate
+public class MovieDetailActivity extends AppCompatActivity {
 
-public class MovieDetail extends AppCompatActivity {
+    /*butterknife binding */
 
-    TextView mTV_movieTitle;
-    ImageView mIV_moviePoster;
-    TextView mTV_movieReleaseDate;
-    RatingBar mRB_movieVoteAverage;
-    TextView mTV_movieVoteAverage;
-    TextView mTV_moviePlot;
-    private final static String LOG_TAG = MovieDetail.class.getName();
+    @BindView(R.id.tv_movie_title) TextView mTV_movieTitle;
+    @BindView(R.id.detail_poster)ImageView mIV_moviePoster;
+    @BindView (R.id.tv_release_date)TextView mTV_movieReleaseDate;
+    @BindView(R.id.rb_vote_average)RatingBar mRB_movieVoteAverage;
+    @BindView(R.id.tv_average) TextView mTV_movieVoteAverage;
+    @BindView(R.id.tv_plot) TextView mTV_moviePlot;
+    private final static String LOG_TAG = MovieDetailActivity.class.getName();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.movie_detail_item);
+        ButterKnife.bind(this);
         //Get the Intent that started the activity
         Intent intent = getIntent();
         Context context = this;
@@ -57,6 +57,7 @@ public class MovieDetail extends AppCompatActivity {
         String outOfTen = this.getString(R.string.average_out_of_ten);
         String averageVotes = Double.toString(movieVoteAverage) + outOfTen;
 
+        //todo 502 implement butterknife
         mTV_movieTitle = (TextView) findViewById(R.id.tv_movie_title);
         mIV_moviePoster = (ImageView) findViewById(R.id.detail_poster);
         mTV_movieReleaseDate = (TextView) findViewById(R.id.tv_release_date);

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Pop Movies</string>
+    <string name="app_name">PopMovies</string>
     <string name="error_message">An error has occurred</string>
     <string name="network_error">No Network Connection Available</string>
     <string name="average_out_of_ten">/10</string>
@@ -8,10 +8,10 @@
     <string name="popular_movie_title">Popular Movies</string>
 
     <!-- Keys are redacted when uploading the code-->
-    <!-- to get a key go to https://www.themoviedb.org/documentation/api
+    <!-- to get a key
+     go to https://www.themoviedb.org/documentation/api
     only KEY1 is used, that is the APIv3 key-->
-    <string name="KEY1"></string>
-    <string name="KEY2"></string>
+
 
     <!-- Menu Items -->
     <string name="sortPopular">Sort by Popular</string>

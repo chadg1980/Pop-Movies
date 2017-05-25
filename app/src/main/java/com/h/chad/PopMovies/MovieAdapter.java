@@ -13,8 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.h.chad.popmovies.R;
-import com.h.chad.PopMovies.MovieDetail;
+import com.h.chad.PopMovies.R;
+import com.h.chad.PopMovies.MovieDetailActivity;
 import com.h.chad.PopMovies.utils.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
@@ -65,7 +65,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         holder.itemView.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                Intent intent = new Intent(mContext, MovieDetail.class);
+                Intent intent = new Intent(mContext, MovieDetailActivity.class);
                 String movieTitle = mMovie.get(position).getTitle();
                 String movieReleaseDate = mMovie.get(position).getReleaseDate();
                 String posterPath = mMovie.get(position).getPosterPath();
@@ -99,7 +99,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
             Context context = itemView.getContext();
             String poster = mMovie.get(listIndex).getPosterPath();
             String totalUrl = IMAGE_URL + poster;
-            Picasso.with(context).load(totalUrl).into(mPoster);
+            // todo 100 add placeholder and error image to Picasso
+            // https://futurestud.io/tutorials/picasso-placeholders-errors-and-fading
+            Picasso
+                    .with(context)
+                    .load(totalUrl)
+                    .noFade()
+                    .into(mPoster);
         }
     }
 }

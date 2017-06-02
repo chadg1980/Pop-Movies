@@ -6,6 +6,8 @@
     <string name="release_year">Release Year: </string>
     <string name="movie_detail">Movie Details</string>
     <string name="popular_movie_title">Popular Movies</string>
+    <string name="trailer_label">Trailers:</string>
+    <string name="review_label">Reviews:</string>
 
     <!-- Keys are redacted when uploading the code-->
     <!-- to get a key
@@ -13,8 +15,11 @@
     only KEY1 is used, that is the APIv3 key-->
 
 
+    <string name="plot_placeholder">Puppy kitty ipsum dolor sit good dog . Pet Gate critters park meow walk sit collar yawn tongue pet chirp fetch chow feathers purr aquarium bird food fleas maine coon cat cage. Pet fish lol catz fleas wet nose play dead yawn scratch puppy vaccine wet nose. Feeder Fido feathers chow Snowball yawn critters yawn cockatiel maine coon cat lol catz dinnertime tongue smooshy. Litter pet supplies yawn collar ID tag fluffy parakeet speak feeder leash feeder lazy cat.</string>
+
     <!-- Menu Items -->
-    <string name="sortPopular">Sort by Popular</string>
-    <string name="sortTopRated">Sort by Rating</string>
+    <string name="sort_popular_menu">Sort by Popular</string>
+    <string name="sort_top_rated_menu">Sort by Rating</string>
+    <string name="sort_favorite_menu">Sort by Favorite</string>
 
 </resources>

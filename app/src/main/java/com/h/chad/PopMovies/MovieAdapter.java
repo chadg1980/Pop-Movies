@@ -10,12 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.h.chad.PopMovies.R;
-import com.h.chad.PopMovies.MovieDetailActivity;
-import com.h.chad.PopMovies.utils.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
@@ -41,6 +36,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     public final static String MOVIE_VOTE_AVERAGE = "MOVIE_VOTE_AVERAGE";
     public final static String MOVIE_PLOT = "MOVIE_PLOT";
     public static final String IMAGE_URL = "https://image.tmdb.org/t/p/w342";
+    public final static String MOVIE_ID = "MOVIE_ID";
+    public final static String API_KEY = "API_KEY";
     private ArrayList<Movie> mMovie;
     private Context mContext;
 
@@ -52,6 +49,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     @Override
     public MovieAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         mContext = parent.getContext();
+
         int layoutIdForRecyclerViewItem = R.layout.recyclerview_item;
         LayoutInflater inflater = LayoutInflater.from(mContext);
         boolean attachToParentImmediatly = false;
@@ -71,12 +69,16 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
                 String posterPath = mMovie.get(position).getPosterPath();
                 double movieVoteAverage = mMovie.get(position).getVoteAverage();
                 String moviePlot = mMovie.get(position).getPlot();
+                int movideId = mMovie.get(position).getMovieID();
+                String apiKey = mContext.getString(R.string.KEY1);
 
                 intent.putExtra(MOVIE_TITLE, movieTitle);
                 intent.putExtra(MOVIE_RELEASE_DATE, movieReleaseDate);
                 intent.putExtra(MOVIE_POSTER_PATH, posterPath);
                 intent.putExtra(MOVIE_VOTE_AVERAGE, movieVoteAverage);
                 intent.putExtra(MOVIE_PLOT, moviePlot);
+                intent.putExtra(MOVIE_ID, movideId);
+                intent.putExtra(API_KEY, apiKey);
                 mContext.startActivity(intent);
             }
         });

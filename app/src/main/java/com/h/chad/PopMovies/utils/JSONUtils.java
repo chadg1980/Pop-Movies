@@ -39,6 +39,18 @@ public final class JSONUtils {
             }else{
                 return movieArrayList;
             }
+            /*
+            * from the base API we get
+            * int movieID         - Which is needed to receive posters, trailers and reviews
+            * String title        - used in displayed in movie_detail_item
+            * String release_date - used in displayed in movie_detail_item
+            * String posterPath   - used to get the poster image
+            * int voteCount       - currently unused
+            * double voteAverage  - used in displayed in movie_detail_item
+            * double popularity   - currently unused
+            * String plot         - used in displayed in movie_detail_item
+            *
+            * */
 
             for(int i = 0; i < resultsArray.length(); i++){
 

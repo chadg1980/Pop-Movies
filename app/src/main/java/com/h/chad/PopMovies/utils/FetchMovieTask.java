@@ -23,7 +23,7 @@ import java.util.ArrayList;
  */
 
 
-//todo 500 move AsycTask to seperate Class File
+
 //Async task call in a background thread
 //https://stackoverflow.com/questions/9963691/android-asynctask-sending-callbacks-to-ui
 public class FetchMovieTask extends AsyncTask<String, Void, ArrayList<Movie>> {
@@ -51,13 +51,10 @@ public class FetchMovieTask extends AsyncTask<String, Void, ArrayList<Movie>> {
         else{
             mListType = listType;
         }
-
     }
-
         @Override
     protected void onPreExecute(){
         super.onPreExecute();
-
         mLoadingIndicator.setVisibility(View.VISIBLE);
     }
     @Override
@@ -66,7 +63,9 @@ public class FetchMovieTask extends AsyncTask<String, Void, ArrayList<Movie>> {
         ArrayList<Movie> simpleJsonMovieData = new ArrayList<>();
         //We get the first 5 pages from the API
         //The more we get the lower quality poster we need to use
-        for(int page = 1; page<5;page++){
+        //for(int page = 1; page<5;page++){
+        //Changing to one page for testing
+        for(int page = 1; page<2;page++){
             movieRequestUrl = NetworkUtils.getMoviesUrl(page, mApiPrivateKey, mListType);
             try{
                 String jsonMovieResponse = NetworkUtils.getResponse(movieRequestUrl);

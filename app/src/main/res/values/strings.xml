@@ -9,12 +9,12 @@
     <string name="trailer_label">Trailers:</string>
     <string name="review_label">Reviews:</string>
 
-    <!-- Keys are redacted when uploading the code-->
+    <!-- Keys are redacted when uploading the code to github-->
     <!-- to get a key
      go to https://www.themoviedb.org/documentation/api
     only KEY1 is used, that is the APIv3 key-->
-    <string name="KEY1">4547d86c49bd9ff8f2205101b4672775</string>
-    <string name="KEY2">eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0NTQ3ZDg2YzQ5YmQ5ZmY4ZjIyMDUxMDFiNDY3Mjc3NSIsInN1YiI6IjU5MTBkZmRhOTI1MTQxNGU4MDAzODBiYyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.sLMqL7U1G5ETmFVf1JBourKatBPBlB5h7nPePCTbEOY</string>
+    <string name="KEY1"></string>
+    <string name="KEY2"></string>
 
 
     <string name="plot_placeholder">Puppy kitty ipsum dolor sit good dog . Pet Gate critters park meow walk sit collar yawn tongue pet chirp fetch chow feathers purr aquarium bird food fleas maine coon cat cage. Pet fish lol catz fleas wet nose play dead yawn scratch puppy vaccine wet nose. Feeder Fido feathers chow Snowball yawn critters yawn cockatiel maine coon cat lol catz dinnertime tongue smooshy. Litter pet supplies yawn collar ID tag fluffy parakeet speak feeder leash feeder lazy cat.</string>

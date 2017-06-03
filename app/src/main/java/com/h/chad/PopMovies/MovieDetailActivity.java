@@ -7,21 +7,24 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.h.chad.PopMovies.R;
-import com.h.chad.PopMovies.utils.FetchMovieThumbnail;
+import com.h.chad.PopMovies.utils.FetchYoutubeKeys;
 import com.h.chad.PopMovies.utils.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
 import java.net.URL;
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 import static com.h.chad.PopMovies.MovieAdapter.API_KEY;
 import static com.h.chad.PopMovies.MovieAdapter.MOVIE_ID;
 import static com.h.chad.PopMovies.MovieAdapter.MOVIE_PLOT;
@@ -29,7 +32,10 @@ import static com.h.chad.PopMovies.MovieAdapter.MOVIE_POSTER_PATH;
 import static com.h.chad.PopMovies.MovieAdapter.MOVIE_RELEASE_DATE;
 import static com.h.chad.PopMovies.MovieAdapter.MOVIE_TITLE;
 import static com.h.chad.PopMovies.MovieAdapter.MOVIE_VOTE_AVERAGE;
-import static com.h.chad.PopMovies.utils.NetworkUtils.getTrailerUrl;
+import static com.h.chad.PopMovies.utils.NetworkUtils.getVideoUrl;
+import static com.h.chad.PopMovies.utils.NetworkUtils.youtubeThumbnailEnd;
+import static com.h.chad.PopMovies.utils.NetworkUtils.youtubeThumbnailUrlBase;
+import static java.lang.reflect.Array.get;
 
 
 /**
@@ -47,6 +53,9 @@ public class MovieDetailActivity extends AppCompatActivity {
     @BindView(R.id.tv_average) TextView mTV_movieVoteAverage;
     @BindView(R.id.tv_plot) TextView mTV_moviePlot;
     @BindView(R.id.tv_show_link) TextView SHOW_LINK;
+    @BindView(R.id.ib_trailer_thumbnail) ImageButton TRAILER_THUMBNAIL;
+    private Context mContext;
+
     private final static String LOG_TAG = MovieDetailActivity.class.getName();
 
     @Override
@@ -56,7 +65,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         //Get the Intent that started the activity
         Intent intent = getIntent();
-        Context context = this;
+        mContext = this;
 
         int movieId = intent.getIntExtra(MOVIE_ID, -1);
         String apiKey = intent.getStringExtra(API_KEY);
@@ -65,7 +74,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         */
 
         if(movieId >=0) {
-            getMovieTrailer(apiKey, movieId);
+            getYoutubeKeys(apiKey, movieId);
         }
 
         String movieTitle = intent.getStringExtra(MOVIE_TITLE);
@@ -85,25 +94,37 @@ public class MovieDetailActivity extends AppCompatActivity {
         mTV_movieVoteAverage = (TextView) findViewById(R.id.tv_average);
 
         String totalUrl = com.h.chad.PopMovies.MovieAdapter.IMAGE_URL + moviePosterPath;
-        Picasso.with(context).load(totalUrl).into(mIV_moviePoster);
+        Picasso.with(mContext).load(totalUrl).into(mIV_moviePoster);
         mTV_movieVoteAverage.setText(averageVotes);
         mTV_movieTitle.setText(movieTitle);
         mTV_movieReleaseDate.setText(parseYear(movieReleaseDate));
         mRB_movieVoteAverage.setRating(movieVoteAverage.floatValue());
         mTV_moviePlot.setText(moviePlot);
+
+
+
+
     }
 
-    private void getMovieTrailer(String apiKey, int movieId) {
+    private String buildThumbUrl(ArrayList<String> youtubeKey) {
+        return youtubeThumbnailUrlBase +  youtubeKey.get(0) + youtubeThumbnailEnd;
 
-        URL linkToTrailer = NetworkUtils.getTrailerUrl(apiKey, movieId);
-        SHOW_LINK.setText(linkToTrailer.toString());
-        new FetchMovieThumbnail(){
-            protected void onPostExecute(Boolean result){
 
+
+    }
+
+    private void getYoutubeKeys(String apiKey, int movieId) {
+
+        URL linkToVideos = NetworkUtils.getVideoUrl(apiKey, movieId);
+        SHOW_LINK.setText("Trailer 1");
+
+        new FetchYoutubeKeys(){
+            @Override
+            protected void onPostExecute(ArrayList<String> results) {
+                String thumbnailUrl = buildThumbUrl(results);
+                Picasso.with(mContext).load(thumbnailUrl).into(TRAILER_THUMBNAIL);
             }
-        }.execute();
-
-
+        }.execute(linkToVideos);
 
         }
 

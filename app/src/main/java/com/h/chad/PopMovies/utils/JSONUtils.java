@@ -32,7 +32,7 @@ public final class JSONUtils {
         }
         try{
             JSONObject baseResponse = new JSONObject(jsonString);
-            //Log.i(LOG_TAG, "Chad says: " + baseResponse);
+
             JSONArray resultsArray = null;
             if(baseResponse.has("results")){
                 resultsArray = baseResponse.getJSONArray("results");
@@ -73,5 +73,33 @@ public final class JSONUtils {
             Log.e(LOG_TAG, "Error Parsing JSON");
         }
         return movieArrayList;
+    }
+
+    public static ArrayList<String> youtubeKeyUrlString(String jsonString) throws JSONException {
+        ArrayList<String> youtubeKeyUrlArray = new ArrayList<>();
+        if (TextUtils.isEmpty(jsonString)) {
+            return youtubeKeyUrlArray;
+        }
+        try {
+            JSONObject baseResponse = new JSONObject(jsonString);
+            JSONArray resultsArray = null;
+            if (baseResponse.has("results")) {
+                resultsArray = baseResponse.getJSONArray("results");
+            } else {
+                return youtubeKeyUrlArray;
+            }
+            for (int i = 0; i < resultsArray.length(); i++) {
+                JSONObject trailer = resultsArray.getJSONObject(i);
+                String type = trailer.getString("type");
+                if (type.equals("Trailer")) {
+                    String youtubeKey = trailer.getString("key");
+                    youtubeKeyUrlArray.add(youtubeKey);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e(LOG_TAG, "Error with the youtubeKey JSON");
+        }
+        return youtubeKeyUrlArray;
     }
 }

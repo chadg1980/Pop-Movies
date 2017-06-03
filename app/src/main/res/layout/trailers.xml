@@ -1,13 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    >
 
     <TextView
         android:id="@+id/tv_show_link"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Hello World"/>
-</LinearLayout>
+
+        android:text="Hello World"
+        app:layout_constraintLeft_toRightOf="@+id/ib_trailer_thumbnail"
+        android:layout_marginLeft="36dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/ib_trailer_thumbnail"
+        app:layout_constraintTop_toTopOf="@+id/ib_trailer_thumbnail"
+        android:layout_marginTop="8dp" />
+
+    <ImageButton
+        android:id="@+id/ib_trailer_thumbnail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:src="@drawable/ic_play_circle_outline_black_24dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="16dp"
+        app:layout_constraintLeft_toLeftOf="parent" />
+</android.support.constraint.ConstraintLayout>

@@ -39,7 +39,7 @@ public class FetchMovieTask extends AsyncTask<String, Void, ArrayList<Movie>> {
 
     //Constructor
     public FetchMovieTask(Context context,ProgressBar progressBar, RecyclerView rv,String listType){
-        //todo 1000 Fix this with Stack Overflow
+
         //https://stackoverflow.com/questions/7836415/call-a-public-method-in-the-activity-class-from-another-class
         this.mLoadingIndicator = progressBar;
         this.mRecyclerView = rv;

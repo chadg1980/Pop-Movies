@@ -28,6 +28,14 @@ public class NetworkUtils {
     public final static  String TOP_RATED = "top_rated";
     public static final  String POPULAR = "popular";
 
+    /*The URL for getting the thumbnail
+    * https://img.youtube.com/vi/<insert-youtube-video-id-here>/0.jpg
+    * 0.jpg is player background thumbnail (480x360), I can see what size works best
+    * https://stackoverflow.com/questions/2068344/how-do-i-get-a-youtube-video-thumbnail-from-the-youtube-api
+    * */
+    public static final String youtubeThumbnailUrlBase = "https://img.youtube.com/vi/";
+    public static final String youtubeThumbnailEnd = "/0.jpg";
+
 
     //Params for the API call
     private static final String API_PARAM = "api_key";
@@ -60,7 +68,7 @@ public class NetworkUtils {
         return url;
     }
 
-    public static URL getTrailerUrl (String apiKeyValue, int id){
+    public static URL getVideoUrl (String apiKeyValue, int id){
         String fullUrl = BASE_URL + id + VIDEO_TRAILER;
         Uri getMovies =  Uri.parse(fullUrl).buildUpon()
                 .appendQueryParameter(API_PARAM, apiKeyValue)
@@ -69,12 +77,11 @@ public class NetworkUtils {
         URL url = null;
         try {
             url = new URL( getMovies.toString());
-
         }catch (MalformedURLException e){
             e.printStackTrace();
             Log.e(LOG_TAG, "buildPopularUrl has an error");
         }
-        Log.e(LOG_TAG, "Video trailers: " + url);
+
         return url;
     }
 

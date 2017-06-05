@@ -36,6 +36,11 @@ public class NetworkUtils {
     public static final String youtubeThumbnailUrlBase = "https://img.youtube.com/vi/";
     public static final String youtubeThumbnailEnd = "/0.jpg";
 
+    /*
+    * URL for watch youtube videos
+    * */
+    public static final String youtubeWatchUrlBase = "https://www.youtube.com/watch?v=";
+
 
     //Params for the API call
     private static final String API_PARAM = "api_key";
@@ -81,8 +86,15 @@ public class NetworkUtils {
             e.printStackTrace();
             Log.e(LOG_TAG, "buildPopularUrl has an error");
         }
-
         return url;
+    }
+
+    public static String buildWatchUrl(String youtubeID) {
+        return youtubeWatchUrlBase + youtubeID;
+    }
+    public static String buildThumbUrl(String youtubeID) {
+        return youtubeThumbnailUrlBase +  youtubeID + youtubeThumbnailEnd;
+
     }
 
     public static String getResponse(URL url) throws IOException{

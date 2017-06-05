@@ -108,7 +108,8 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_plot"
-            tools:layout_editor_absoluteX="0dp" />
+            tools:layout_editor_absoluteX="0dp"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/trailer_label"
@@ -117,10 +118,12 @@
             android:paddingLeft="16dp"
             android:paddingStart="16dp"
             android:paddingTop="16dp"
+            android:visibility="gone"
             android:text="@string/trailer_label"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/trailer_line" />
+            app:layout_constraintTop_toBottomOf="@+id/trailer_line"
+            />
 
 
         <View
@@ -133,7 +136,7 @@
             android:paddingRight="16dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/trailers"
+            app:layout_constraintTop_toBottomOf="@+id/rv_trailers"
             tools:layout_editor_absoluteX="0dp" />
 
         <TextView
@@ -147,16 +150,19 @@
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/review_line" />
-        <include
-            android:id="@+id/trailers"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            layout="@layout/trailers"
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_trailers"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:paddingBottom="0dp"
             android:paddingTop="16dp"
+            android:scrollbars="vertical"
+            app:layout_constraintHeight_default="wrap"
             app:layout_constraintTop_toBottomOf="@+id/trailer_label"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            />
+            android:visibility="gone"/>
 
 
     </android.support.constraint.ConstraintLayout>

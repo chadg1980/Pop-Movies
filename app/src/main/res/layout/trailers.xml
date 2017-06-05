@@ -2,22 +2,21 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    >
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/tv_show_link"
+        android:id="@+id/tv_trailer_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-
-        android:text="Hello World"
+        tools:text="@string/trailer_name"
         app:layout_constraintLeft_toRightOf="@+id/ib_trailer_thumbnail"
         android:layout_marginLeft="36dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/ib_trailer_thumbnail"
         app:layout_constraintTop_toTopOf="@+id/ib_trailer_thumbnail"
-        android:layout_marginTop="8dp" />
+        android:layout_marginTop="8dp"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"/>
 
     <ImageButton
         android:id="@+id/ib_trailer_thumbnail"

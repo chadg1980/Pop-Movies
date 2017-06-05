@@ -93,6 +93,9 @@ public class FetchMovieTask extends AsyncTask<String, Void, ArrayList<Movie>> {
         }else {
             mLoadingIndicator.setVisibility(View.INVISIBLE);
             mMovieAdapter = new MovieAdapter(movies, mMainContext.getApplicationContext());
+            mRecyclerView.setItemViewCacheSize(20);
+            mRecyclerView.setDrawingCacheEnabled(true);
+            mRecyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
             mRecyclerView.setAdapter(mMovieAdapter);
         }
     }

@@ -6,7 +6,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -52,9 +55,11 @@ public class MovieDetailActivity extends AppCompatActivity {
     @BindView(R.id.rb_vote_average)RatingBar mRB_movieVoteAverage;
     @BindView(R.id.tv_average) TextView mTV_movieVoteAverage;
     @BindView(R.id.tv_plot) TextView mTV_moviePlot;
-    @BindView(R.id.tv_show_link) TextView SHOW_LINK;
-    @BindView(R.id.ib_trailer_thumbnail) ImageButton TRAILER_THUMBNAIL;
+    @BindView(R.id.trailer_label) TextView mTrailerLabel;
+    @BindView(R.id.trailer_line) View mTrailerLine;
+    RecyclerView mRecyclerTrailer;
     private Context mContext;
+    private TrailerAdapter mTrailerAdapter;
 
     private final static String LOG_TAG = MovieDetailActivity.class.getName();
 
@@ -66,17 +71,14 @@ public class MovieDetailActivity extends AppCompatActivity {
         //Get the Intent that started the activity
         Intent intent = getIntent();
         mContext = this;
+        mRecyclerTrailer = (RecyclerView) findViewById(R.id.rv_trailers);
+        mRecyclerTrailer.setLayoutManager(new LinearLayoutManager(this));
 
         int movieId = intent.getIntExtra(MOVIE_ID, -1);
         String apiKey = intent.getStringExtra(API_KEY);
-        /*
-        * This is only a test
-        */
-
         if(movieId >=0) {
             getYoutubeKeys(apiKey, movieId);
         }
-
         String movieTitle = intent.getStringExtra(MOVIE_TITLE);
         String movieReleaseDate = intent.getStringExtra(MOVIE_RELEASE_DATE);
         String moviePosterPath = intent.getStringExtra(MOVIE_POSTER_PATH);
@@ -101,28 +103,26 @@ public class MovieDetailActivity extends AppCompatActivity {
         mRB_movieVoteAverage.setRating(movieVoteAverage.floatValue());
         mTV_moviePlot.setText(moviePlot);
 
-
-
-
-    }
-
-    private String buildThumbUrl(ArrayList<String> youtubeKey) {
-        return youtubeThumbnailUrlBase +  youtubeKey.get(0) + youtubeThumbnailEnd;
-
-
-
     }
 
     private void getYoutubeKeys(String apiKey, int movieId) {
-
         URL linkToVideos = NetworkUtils.getVideoUrl(apiKey, movieId);
-        SHOW_LINK.setText("Trailer 1");
-
         new FetchYoutubeKeys(){
             @Override
             protected void onPostExecute(ArrayList<String> results) {
-                String thumbnailUrl = buildThumbUrl(results);
-                Picasso.with(mContext).load(thumbnailUrl).into(TRAILER_THUMBNAIL);
+
+                if(results.size() > 0) {
+                    mTrailerLabel.setVisibility(View.VISIBLE);
+                    mRecyclerTrailer.setVisibility(View.VISIBLE);
+                    mTrailerLine.setVisibility(View.VISIBLE);
+
+                    mTrailerAdapter = new TrailerAdapter(results, mContext);
+                    mRecyclerTrailer.setItemViewCacheSize(20);
+                    mRecyclerTrailer.setDrawingCacheEnabled(true);
+                    mRecyclerTrailer.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+                    mRecyclerTrailer.setAdapter(mTrailerAdapter);
+                }
+
             }
         }.execute(linkToVideos);
 

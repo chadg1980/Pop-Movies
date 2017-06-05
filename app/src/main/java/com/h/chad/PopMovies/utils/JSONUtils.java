@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.h.chad.PopMovies.Movie;
+import com.h.chad.PopMovies.Review;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -101,5 +102,12 @@ public final class JSONUtils {
             Log.e(LOG_TAG, "Error with the youtubeKey JSON");
         }
         return youtubeKeyUrlArray;
+    }
+
+    public static ArrayList<Review> getReviewFromJson(Context context, String jsonString)
+            throws JSONException {
+            ArrayList<Review> reviews = new ArrayList<>();
+
+        return reviews;
     }
 }

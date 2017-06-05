@@ -17,6 +17,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.h.chad.PopMovies.R;
+import com.h.chad.PopMovies.utils.FetchReviewTask;
 import com.h.chad.PopMovies.utils.FetchYoutubeKeys;
 import com.h.chad.PopMovies.utils.NetworkUtils;
 import com.squareup.picasso.Picasso;
@@ -35,10 +36,7 @@ import static com.h.chad.PopMovies.MovieAdapter.MOVIE_POSTER_PATH;
 import static com.h.chad.PopMovies.MovieAdapter.MOVIE_RELEASE_DATE;
 import static com.h.chad.PopMovies.MovieAdapter.MOVIE_TITLE;
 import static com.h.chad.PopMovies.MovieAdapter.MOVIE_VOTE_AVERAGE;
-import static com.h.chad.PopMovies.utils.NetworkUtils.getVideoUrl;
-import static com.h.chad.PopMovies.utils.NetworkUtils.youtubeThumbnailEnd;
-import static com.h.chad.PopMovies.utils.NetworkUtils.youtubeThumbnailUrlBase;
-import static java.lang.reflect.Array.get;
+import static com.h.chad.PopMovies.R.layout.trailer_item;
 
 
 /**
@@ -103,6 +101,9 @@ public class MovieDetailActivity extends AppCompatActivity {
         mRB_movieVoteAverage.setRating(movieVoteAverage.floatValue());
         mTV_moviePlot.setText(moviePlot);
 
+        getReviews(apiKey, movieId);
+
+
     }
 
     private void getYoutubeKeys(String apiKey, int movieId) {
@@ -126,6 +127,15 @@ public class MovieDetailActivity extends AppCompatActivity {
             }
         }.execute(linkToVideos);
 
+        }
+        private void getReviews(String apiKey, int movieID){
+            Log.e(LOG_TAG, "Chad Says: " + NetworkUtils.getReviewsUrl(apiKey, movieID, 1));
+            new FetchReviewTask(){
+                @Override
+                protected void onPostExecute(Void aVoid) {
+                    super.onPostExecute(aVoid);
+                }
+            }.execute();
         }
 
 

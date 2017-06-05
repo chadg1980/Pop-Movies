@@ -23,6 +23,7 @@ public class NetworkUtils {
     private static final String BASE_URL = "https://api.themoviedb.org/3/movie/";
     private static final String LANGUAGE = "en-US";
     private static final String VIDEO_TRAILER = "/videos";
+    private static final String GET_REVIEWS = "/reviews";
 
     /*The two list types are public so other classes can use them*/
     public final static  String TOP_RATED = "top_rated";
@@ -84,8 +85,28 @@ public class NetworkUtils {
             url = new URL( getMovies.toString());
         }catch (MalformedURLException e){
             e.printStackTrace();
-            Log.e(LOG_TAG, "buildPopularUrl has an error");
+            Log.e(LOG_TAG, "getVideoURL has an error");
         }
+        return url;
+    }
+    public static URL getReviewsUrl (String apiKeyValue, int id, int page){
+        String fullUrl = BASE_URL + id + GET_REVIEWS;
+        if(page <= 0){
+            page = 1;
+        }
+        Uri getMovies =  Uri.parse(fullUrl).buildUpon()
+                .appendQueryParameter(API_PARAM, apiKeyValue)
+                .appendQueryParameter(LANGUAGE_PARAM, LANGUAGE)
+                .appendQueryParameter(PAGE_PARAM, Integer.toString(page))
+                .build();
+        URL url = null;
+        try {
+            url = new URL( getMovies.toString());
+        }catch (MalformedURLException e){
+            e.printStackTrace();
+            Log.e(LOG_TAG, "getReviewUrl has an error");
+        }
+        Log.i(LOG_TAG, "Chad Says " + url);
         return url;
     }
 

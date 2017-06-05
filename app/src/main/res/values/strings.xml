@@ -9,6 +9,7 @@
     <string name="trailer_label">Trailers:</string>
     <string name="review_label">Reviews:</string>
 
+
     <!-- Keys are redacted when uploading the code to github-->
     <!-- to get a key
      go to https://www.themoviedb.org/documentation/api

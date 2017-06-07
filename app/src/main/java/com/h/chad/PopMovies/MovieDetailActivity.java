@@ -56,7 +56,10 @@ public class MovieDetailActivity extends AppCompatActivity {
     @BindView(R.id.trailer_label) TextView mTrailerLabel;
     @BindView(R.id.trailer_line) View mTrailerLine;
     RecyclerView mRecyclerTrailer;
+    RecyclerView getmRecyclerReview;
+
     private Context mContext;
+    private ReviewAdapter mReviewAdapter;
     private TrailerAdapter mTrailerAdapter;
 
     private final static String LOG_TAG = MovieDetailActivity.class.getName();
@@ -71,6 +74,9 @@ public class MovieDetailActivity extends AppCompatActivity {
         mContext = this;
         mRecyclerTrailer = (RecyclerView) findViewById(R.id.rv_trailers);
         mRecyclerTrailer.setLayoutManager(new LinearLayoutManager(this));
+
+        getmRecyclerReview = (RecyclerView) findViewById(R.id.rv_reviews);
+        getmRecyclerReview.setLayoutManager(new LinearLayoutManager(this));
 
         int movieId = intent.getIntExtra(MOVIE_ID, -1);
         String apiKey = intent.getStringExtra(API_KEY);
@@ -100,10 +106,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         mTV_movieReleaseDate.setText(parseYear(movieReleaseDate));
         mRB_movieVoteAverage.setRating(movieVoteAverage.floatValue());
         mTV_moviePlot.setText(moviePlot);
-
         getReviews(apiKey, movieId);
-
-
     }
 
     private void getYoutubeKeys(String apiKey, int movieId) {
@@ -126,17 +129,21 @@ public class MovieDetailActivity extends AppCompatActivity {
 
             }
         }.execute(linkToVideos);
-
-        }
-        private void getReviews(String apiKey, int movieID){
-            Log.e(LOG_TAG, "Chad Says: " + NetworkUtils.getReviewsUrl(apiKey, movieID, 1));
-            new FetchReviewTask(){
-                @Override
-                protected void onPostExecute(Void aVoid) {
-                    super.onPostExecute(aVoid);
+    }
+    private void getReviews(String apiKey, int movieID){
+        URL linkToReviews  = NetworkUtils.getReviewsUrl(apiKey, movieID, 1);
+        new FetchReviewTask(mContext){
+            @Override
+            protected void onPostExecute(ArrayList<Review> reviews){
+                if(reviews == null){
+                    Log.e(LOG_TAG, "no reviews");
                 }
-            }.execute();
-        }
+                mReviewAdapter = new ReviewAdapter(reviews, mContext);
+                getmRecyclerReview.setAdapter(mReviewAdapter);
+
+            }
+        }.execute(linkToReviews);
+    }
 
 
     private String parseYear(String inDate) {

@@ -106,7 +106,6 @@ public class NetworkUtils {
             e.printStackTrace();
             Log.e(LOG_TAG, "getReviewUrl has an error");
         }
-        Log.i(LOG_TAG, "Chad Says " + url);
         return url;
     }
 
@@ -115,7 +114,6 @@ public class NetworkUtils {
     }
     public static String buildThumbUrl(String youtubeID) {
         return youtubeThumbnailUrlBase +  youtubeID + youtubeThumbnailEnd;
-
     }
 
     public static String getResponse(URL url) throws IOException{

@@ -13,6 +13,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import static android.R.attr.type;
 import static android.webkit.ConsoleMessage.MessageLevel.LOG;
 
 
@@ -107,6 +108,28 @@ public final class JSONUtils {
     public static ArrayList<Review> getReviewFromJson(Context context, String jsonString)
             throws JSONException {
             ArrayList<Review> reviews = new ArrayList<>();
+        if (TextUtils.isEmpty(jsonString)) {
+            return reviews;
+        }
+        try {
+            JSONObject baseResponse = new JSONObject(jsonString);
+            JSONArray resultsArray = null;
+            if (baseResponse.has("results")) {
+                resultsArray = baseResponse.getJSONArray("results");
+            } else {
+                return reviews;
+            }
+            for (int i = 0; i < resultsArray.length(); i++) {
+                JSONObject reviewsObject = resultsArray.getJSONObject(i);
+                String authorString = reviewsObject.getString("author");
+                String contentString = reviewsObject.getString("content");
+                Review  newReview = new Review(authorString, contentString);
+                reviews.add(newReview);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e(LOG_TAG, "Error with the reviews JSON");
+        }
 
         return reviews;
     }

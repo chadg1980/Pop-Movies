@@ -8,19 +8,23 @@
 
     <TextView
         android:id="@+id/tv_author"
-        android:layout_width="wrap_content"
+        android:layout_width="367dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+
         android:layout_marginTop="8dp"
-        android:text="TextView"
+        android:background="@color/backgroundauthor"
+        android:paddingLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="John Doe"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"/>
+        android:paddingStart="8dp"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
 
     <TextView
         android:id="@+id/tv_content"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
@@ -32,7 +36,20 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_author"
         tools:text="@string/plot_placeholder"
+        android:maxLines="3"
 
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"/>
+
+    <TextView
+        android:id="@+id/tv_click_to_read_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="0dp"
+        android:text="@string/review_read_more"
+        app:layout_constraintRight_toRightOf="@+id/tv_content"
+        app:layout_constraintTop_toBottomOf="@+id/tv_content"
+        android:visibility="gone"
+        android:textColor="@android:color/holo_blue_dark"/>
 
 </android.support.constraint.ConstraintLayout>

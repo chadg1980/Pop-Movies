@@ -55,6 +55,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     @BindView(R.id.tv_plot) TextView mTV_moviePlot;
     @BindView(R.id.trailer_label) TextView mTrailerLabel;
     @BindView(R.id.trailer_line) View mTrailerLine;
+    @BindView(R.id.tv_no_review) TextView mNoReview;
     RecyclerView mRecyclerTrailer;
     RecyclerView getmRecyclerReview;
 
@@ -138,8 +139,12 @@ public class MovieDetailActivity extends AppCompatActivity {
                 if(reviews == null){
                     Log.e(LOG_TAG, "no reviews");
                 }
-                mReviewAdapter = new ReviewAdapter(reviews, mContext);
-                getmRecyclerReview.setAdapter(mReviewAdapter);
+                if(reviews.size() != 0) {
+                    mNoReview.setVisibility(View.GONE);
+                    getmRecyclerReview.setVisibility(View.VISIBLE);
+                    mReviewAdapter = new ReviewAdapter(reviews, mContext);
+                    getmRecyclerReview.setAdapter(mReviewAdapter);
+                }
 
             }
         }.execute(linkToReviews);

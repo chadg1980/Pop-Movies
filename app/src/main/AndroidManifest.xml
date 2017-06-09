@@ -23,6 +23,11 @@
             android:parentActivityName=".MainActivity">
 
         </activity>
+        <provider
+            android:authorities="com.h.chad.PopMovies"
+            android:name=".data.FavoritesContentProvider"
+            android:exported="false"/>
+
     </application>
 
 </manifest>

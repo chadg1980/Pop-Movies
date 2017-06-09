@@ -10,11 +10,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.h.chad.PopMovies.R;
 import com.h.chad.PopMovies.utils.FetchReviewTask;
@@ -56,6 +58,8 @@ public class MovieDetailActivity extends AppCompatActivity {
     @BindView(R.id.trailer_label) TextView mTrailerLabel;
     @BindView(R.id.trailer_line) View mTrailerLine;
     @BindView(R.id.tv_no_review) TextView mNoReview;
+    @BindView(R.id.tb_add_favorite) ToggleButton mAddFavorite;
+
     RecyclerView mRecyclerTrailer;
     RecyclerView getmRecyclerReview;
 
@@ -84,7 +88,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         if(movieId >=0) {
             getYoutubeKeys(apiKey, movieId);
         }
-        String movieTitle = intent.getStringExtra(MOVIE_TITLE);
+        final String movieTitle = intent.getStringExtra(MOVIE_TITLE);
         String movieReleaseDate = intent.getStringExtra(MOVIE_RELEASE_DATE);
         String moviePosterPath = intent.getStringExtra(MOVIE_POSTER_PATH);
         String moviePlot = intent.getStringExtra(MOVIE_PLOT);
@@ -108,6 +112,19 @@ public class MovieDetailActivity extends AppCompatActivity {
         mRB_movieVoteAverage.setRating(movieVoteAverage.floatValue());
         mTV_moviePlot.setText(moviePlot);
         getReviews(apiKey, movieId);
+
+        mAddFavorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    mAddFavorite.setTextOn(" is a favorite");
+
+                }else {
+                    mAddFavorite.setTextOff("add to favorite");
+                }
+            }
+        });
     }
 
     private void getYoutubeKeys(String apiKey, int movieId) {

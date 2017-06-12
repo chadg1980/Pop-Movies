@@ -1,8 +1,13 @@
 package com.h.chad.PopMovies;
 
 import android.content.Context;
+import android.content.Loader;
+import android.content.res.Configuration;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
+
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -14,40 +19,62 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import android.app.LoaderManager;
+import android.content.CursorLoader;
+import android.content.Loader;
+import android.support.v4.widget.CursorAdapter;
+
 import com.facebook.stetho.Stetho;
 import com.h.chad.PopMovies.MovieAdapter;
+import com.h.chad.PopMovies.data.FavoritesContract;
 import com.h.chad.PopMovies.utils.FetchMovieTask;
 import com.h.chad.PopMovies.utils.ItemDecoration;
 import com.h.chad.PopMovies.utils.JSONUtils;
 import com.h.chad.PopMovies.utils.NetworkUtils;
 import com.h.chad.PopMovies.R;
+import com.h.chad.PopMovies.data.FavoritesContract.FavoritesEntry;
 
-import java.net.URL;
 import java.util.ArrayList;
 
 import butterknife.BindView;
 
-public class MainActivity extends AppCompatActivity {
+import static android.R.attr.data;
+import static android.os.Build.VERSION_CODES.M;
+
+public class MainActivity extends AppCompatActivity implements
+        LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String LOG_TAG = MainActivity.class.getName();
 
     private RecyclerView mRecyclerView;
-    private MovieAdapter mMovieAdapter;
     private ProgressBar mLoadingIndicator;
     private TextView mErrorMessage;
-    private String mListType;
     private Context mContext;
     private String mNetworkErrorMessage;
     private boolean mHasKey;
+    private static final int URL_LOADER = 0;
+    boolean mFavoritesIsActive;
+    private String mListType;
+    MovieAdapter mMovieAdapter;
+
+    //Constance for savedInstanceStates
+    private String SAVED_FAVORITE_BOOL = "isFavoriteActive";
+    private String SAVED_LIST_TYPE = "listType";
+
 
     //Key is redcted for security purposes.
     // A key can be aquired at https://www.themoviedb.org/documentation/api
-    private String mApiPrivateKey;
+    //private String mApiPrivateKey;
     private String mNoKeyErrorMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            mFavoritesIsActive = savedInstanceState.getBoolean(SAVED_FAVORITE_BOOL);
+            mListType = savedInstanceState.getString(SAVED_LIST_TYPE);
+        }
+
         setContentView(R.layout.activity_main);
         final Context context = getApplicationContext();
         mContext = context;
@@ -64,13 +91,11 @@ public class MainActivity extends AppCompatActivity {
         //https://www.themoviedb.org/documentation/api
         //Stop everything and check for an API key
         //Without an API key the rest of the app doesn't work.
-        mApiPrivateKey = mContext.getString(R.string.KEY1);
-        if (mApiPrivateKey.length() != 32) {
+        String apiPrivateKey = mContext.getString(R.string.KEY1);
+        if (apiPrivateKey.length() != 32) {
             mHasKey = false;
             showSpecificError(mNoKeyErrorMessage);
         } else {
-
-
             //making popular by default so no null values get sent to the API call
             if (mListType == null) {
                 mListType = NetworkUtils.POPULAR;
@@ -83,11 +108,17 @@ public class MainActivity extends AppCompatActivity {
             //END Stetho debug tools
 
             //Check for a network connection
+            //Favorite is a database call, so if favortites is active, then we don't need to show
+            //a network error.
             boolean isConnected = checkConnection();
-            if (!isConnected) {
+            if (!isConnected && !mFavoritesIsActive) {
                 showSpecificError(mNetworkErrorMessage);
 
-            } else {
+            }else if((!isConnected || isConnected) && mFavoritesIsActive){
+                setupRecyclerView();
+                loadMoviesFavoriteMoviesFromCursor();
+            }
+            else {
                 //If connection is good, we set up the recycler view then load the movies
                 setupRecyclerView();
                 loadMovies();
@@ -101,6 +132,11 @@ public class MainActivity extends AppCompatActivity {
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         return(activeNetwork != null && activeNetwork.isConnectedOrConnecting());
     }
+    /**
+     * This method sets up the recycler view,
+     * Can be called from the Menu when the type of list is changed
+     * and called from the oncreate method
+     * */
     private void setupRecyclerView(){
         GridLayoutManager layoutManager =
                 new GridLayoutManager(this, 4, GridLayoutManager.VERTICAL, false);
@@ -111,8 +147,11 @@ public class MainActivity extends AppCompatActivity {
     }
     private void loadMovies(){
         showData();
-
         new FetchMovieTask(mContext, mLoadingIndicator, mRecyclerView, mListType).execute();
+    }
+    private void loadMoviesFavoriteMoviesFromCursor(){
+        showData();
+        getLoaderManager().initLoader(URL_LOADER, null, this);
     }
 
     //Create the options menu
@@ -125,41 +164,44 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         int id = item.getItemId();
+
         //The api can call popular or top rated
         switch (id){
             case R.id.sortPopular:
                 mListType = NetworkUtils.POPULAR;
+                mFavoritesIsActive = false;
                 break;
             case R.id.sortTopRated:
                 mListType = NetworkUtils.TOP_RATED;
+                mFavoritesIsActive = false;
+                break;
+            case R.id.sortByFavorite:
+                mListType = NetworkUtils.FAVORITE;
+                mFavoritesIsActive = true;
                 break;
             default:
                 return super.onOptionsItemSelected(item);
         }
         boolean isConnected = checkConnection();
+        if(!mHasKey) {
+            showSpecificError(mNoKeyErrorMessage);
+        }
+        else if (!isConnected && !mFavoritesIsActive) {
+            showSpecificError(mNetworkErrorMessage);
+        }else {
+            if(mFavoritesIsActive){
+                loadMoviesFavoriteMoviesFromCursor();
+            }else{
+                loadMovies();
+            }
+        }
 
-        if(isConnected && mHasKey) {
-            setupRecyclerView();
-            loadMovies();
-        }
-        else {
-            if(!isConnected)
-                showSpecificError(mNetworkErrorMessage);
-            if(!mHasKey)
-                showSpecificError(mNoKeyErrorMessage);
-        }
         return super.onOptionsItemSelected(item);
     }
     //Shows the data, makes errormessage invisible
     public void showData(){
         mErrorMessage.setVisibility(View.INVISIBLE);
         mRecyclerView.setVisibility(View.VISIBLE);
-    }
-    //Show the error message
-    public void showErrorMessage(){
-        mLoadingIndicator.setVisibility(View.INVISIBLE);
-        mRecyclerView.setVisibility(View.INVISIBLE);
-        mErrorMessage.setVisibility(View.VISIBLE);
     }
     //shows a secific error message
     private void showSpecificError(String errorType){
@@ -168,4 +210,85 @@ public class MainActivity extends AppCompatActivity {
         mErrorMessage.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Uri favoriteUri = FavoritesEntry.CONTENT_URI;
+
+        String []projection = {
+                FavoritesEntry._ID,
+                FavoritesEntry.MOVIE_ID,
+                FavoritesEntry.TITLE,
+                FavoritesEntry.RELEASE_DATE,
+                FavoritesEntry.POSTER_PATH,
+                FavoritesEntry.VOTE_COUNT,
+                FavoritesEntry.VOTE_AVERAGE,
+                FavoritesEntry.PLOT
+        };
+        return new CursorLoader(
+                mContext,
+                favoriteUri,
+                projection,
+                null,
+                null,
+                null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        Log.e(LOG_TAG, "onLoadfinished ");
+        if( (cursor == null) || (cursor.getCount() < 1) ){
+            return;
+        }
+        ArrayList<Movie> moviesArrayList = new ArrayList<>();
+
+        while(cursor.moveToNext()){
+            int movieIdColumnIndex = cursor.getColumnIndex(FavoritesEntry.MOVIE_ID);
+            int movieTitleColumnIndex = cursor.getColumnIndex(FavoritesEntry.TITLE);
+            int releaseDateColumnIndex = cursor.getColumnIndex(FavoritesEntry.RELEASE_DATE);
+            int posterPathColumnIndex = cursor.getColumnIndex(FavoritesEntry.POSTER_PATH);
+            int voteCountColumnIndex = cursor.getColumnIndex(FavoritesEntry.VOTE_COUNT);
+            int voteAverageColumnIndex = cursor.getColumnIndex(FavoritesEntry.VOTE_AVERAGE);
+            int plotColumnIndex = cursor.getColumnIndex(FavoritesEntry.PLOT);
+
+            int movieId = cursor.getInt(movieIdColumnIndex);
+            String movieTitle = cursor.getString(movieTitleColumnIndex);
+            String releaseDate = cursor.getString(releaseDateColumnIndex);
+            String posterPath = cursor.getString(posterPathColumnIndex);
+            int voteCount = cursor.getInt(voteCountColumnIndex);
+            double voteAverage = cursor.getDouble(voteAverageColumnIndex);
+            String plot = cursor.getString(plotColumnIndex);
+            Movie movie = new Movie(movieId, movieTitle, releaseDate, posterPath,
+                    voteCount, voteAverage, plot);
+            moviesArrayList.add(movie);
+        }
+        Log.e(LOG_TAG, " All cursors added.... ");
+        mLoadingIndicator.setVisibility(View.INVISIBLE);
+        mMovieAdapter= new MovieAdapter(moviesArrayList, mContext);
+        mRecyclerView.setItemViewCacheSize(20);
+        mRecyclerView.setDrawingCacheEnabled(true);
+        mRecyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        mRecyclerView.setAdapter(mMovieAdapter);
+        cursor.moveToFirst();
+
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        Log.i(LOG_TAG, "Loader Reset");
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(SAVED_FAVORITE_BOOL, mFavoritesIsActive);
+        outState.putString(SAVED_LIST_TYPE, mListType);
+        Log.e(LOG_TAG, " ON SAVED INSTANCE");
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
 }

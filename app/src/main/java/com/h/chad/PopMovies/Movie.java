@@ -34,6 +34,19 @@ public class Movie {
         this.voteAverage = voteAverage;
         this.plot = plot;
     }
+    //I removed Popular from the Movie constructor since I did not store popular in the database.
+    //This constructor is for the Cursor Adapter.
+    public Movie(int movieID, String title, String releaseDate,
+                 String posterPath, int voteCount, double voteAverage,
+                 String plot){
+        this.movieID = movieID;
+        this.title = title;
+        this.releaseDate = releaseDate;
+        this.posterPath = posterPath;
+        this.voteCount = voteCount;
+        this.voteAverage = voteAverage;
+        this.plot = plot;
+    }
 
     public int getMovieID() {
         return movieID;

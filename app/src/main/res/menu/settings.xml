@@ -10,5 +10,6 @@
         android:visible="true"/>
     <item
         android:id="@+id/sortByFavorite"
-        android:title="@string/sort_favorite_menu"/>
+        android:title="@string/sort_favorite_menu"
+        android:visible="true"/>
 </menu>

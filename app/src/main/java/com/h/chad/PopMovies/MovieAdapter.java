@@ -20,8 +20,6 @@ import java.util.ArrayList;
 
 import static android.R.attr.start;
 import static android.icu.lang.UProperty.AGE;
-import static android.media.CamcorderProfile.get;
-import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 /**
  * Created by chad on 5/8/2017.
@@ -33,6 +31,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     public final static String MOVIE_TITLE = "MOVIE_TITLE";
     public final static String MOVIE_RELEASE_DATE = "MOVIE_RELEASE_DATE";
     public final static String MOVIE_POSTER_PATH = "MOVIE_POSTER_PATH";
+    public final static String MOVIE_VOTE_COUNT = "MOVIE_VOTE_COUNT";
     public final static String MOVIE_VOTE_AVERAGE = "MOVIE_VOTE_AVERAGE";
     public final static String MOVIE_PLOT = "MOVIE_PLOT";
     public static final String IMAGE_URL = "https://image.tmdb.org/t/p/w342";
@@ -67,6 +66,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
                 String movieTitle = mMovie.get(position).getTitle();
                 String movieReleaseDate = mMovie.get(position).getReleaseDate();
                 String posterPath = mMovie.get(position).getPosterPath();
+                int voteCount = mMovie.get(position).getVoteCount();
                 double movieVoteAverage = mMovie.get(position).getVoteAverage();
                 String moviePlot = mMovie.get(position).getPlot();
                 int movideId = mMovie.get(position).getMovieID();
@@ -76,6 +76,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
                 intent.putExtra(MOVIE_RELEASE_DATE, movieReleaseDate);
                 intent.putExtra(MOVIE_POSTER_PATH, posterPath);
                 intent.putExtra(MOVIE_VOTE_AVERAGE, movieVoteAverage);
+                intent.putExtra(MOVIE_VOTE_COUNT, voteCount);
                 intent.putExtra(MOVIE_PLOT, moviePlot);
                 intent.putExtra(MOVIE_ID, movideId);
                 intent.putExtra(API_KEY, apiKey);
@@ -90,7 +91,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         return mMovie.size();
     }
 
-    class MovieAdapterViewHolder extends RecyclerView.ViewHolder {
+      class MovieAdapterViewHolder extends RecyclerView.ViewHolder {
         ImageView mPoster;
 
         public MovieAdapterViewHolder(View itemView) {

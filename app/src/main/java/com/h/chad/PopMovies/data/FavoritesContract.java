@@ -14,7 +14,7 @@ public class FavoritesContract {
     private FavoritesContract(){}
 
     private static final String LOG_TAG = FavoritesContract.class.getName();
-    public static final String CONTENT_AUTHORITY = "com.h.chad.PopMovies.data";
+    public static final String CONTENT_AUTHORITY = "com.h.chad.PopMovies";
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
     public static final String PATH_FAVORITES = "favorites";
 
@@ -50,11 +50,11 @@ public class FavoritesContract {
         public final static String VOTE_COUNT = "vote_count";
         //Vote Average for the rating
         public final static String VOTE_AVERAGE = "vote_average";
-        //Popularity of the movie
+        //Popularity of the movie UNUSED *
         public final static String POPULARITY = "popularity";
         //Plot of the movie
         public final static String PLOT = "plot";
-        //movie poster
+        //movie poster - removed as Picasso can cache image
         public final static String POSTER = "poster";
 
         //Return values for getType in FavoriteProvider

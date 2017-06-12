@@ -208,8 +208,6 @@
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"/>
 
 
-
-
     </android.support.constraint.ConstraintLayout>
 </ScrollView>
 

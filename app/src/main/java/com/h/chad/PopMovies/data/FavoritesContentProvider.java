@@ -6,14 +6,12 @@ import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.os.Bundle;
 import android.util.Log;
 
-import static android.R.attr.value;
 import static com.h.chad.PopMovies.data.FavoritesContract.CONTENT_AUTHORITY;
+import static com.h.chad.PopMovies.data.FavoritesContract.FavoritesEntry.MOVIE_ID;
 import static com.h.chad.PopMovies.data.FavoritesContract.FavoritesEntry.TABLE_NAME;
 import static com.h.chad.PopMovies.data.FavoritesContract.PATH_FAVORITES;
 import static com.h.chad.PopMovies.data.FavoritesContract.FavoritesEntry.CONTENT_LIST_TYPE;
@@ -45,6 +43,7 @@ public class FavoritesContentProvider extends ContentProvider{
         mDbHelper = new FavoritesDbHelper(getContext());
         return true;
     }
+
 
     /**
      * @param uri
@@ -110,7 +109,6 @@ public class FavoritesContentProvider extends ContentProvider{
         switch (match){
             case FAVORITE_MOVIES:
                 Uri returnUri = insertFavorite(uri, values);
-                Log.e(LOG_TAG, "CHAD SAYS INSERTION SUCCESSFULL " + returnUri);
                 return returnUri;
             default:
                 throw new IllegalArgumentException(LOG_TAG + " can't match URI " + uri );
@@ -130,7 +128,7 @@ public class FavoritesContentProvider extends ContentProvider{
         int voteCount = values.getAsInteger(FavoritesEntry.VOTE_COUNT);
         double voteAverage = values.getAsDouble(FavoritesEntry.VOTE_AVERAGE);
         String plotString = values.getAsString(FavoritesEntry.PLOT);
-        byte[] poster = values.getAsByteArray(FavoritesEntry.POSTER);
+
 
         id = db.insert(TABLE_NAME, null, values);
         if(id == -1){
@@ -172,4 +170,5 @@ public class FavoritesContentProvider extends ContentProvider{
         rowsAffected = db.update(TABLE_NAME, values, selection, selectionArgs);
         return rowsAffected;
     }
+
 }

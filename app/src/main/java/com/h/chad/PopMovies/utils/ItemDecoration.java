@@ -1,8 +1,14 @@
 package com.h.chad.PopMovies.utils;
 
+import android.content.Context;
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.WindowManager;
+
+import com.h.chad.PopMovies.MainActivity;
+import com.h.chad.PopMovies.R;
 
 /**
  * Created by chad on 5/10/2017.

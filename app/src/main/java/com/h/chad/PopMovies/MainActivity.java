@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -134,21 +135,53 @@ public class MainActivity extends AppCompatActivity implements
      * and called from the oncreate method
      * */
     private void setupRecyclerView(){
+
+        //Check if the the screen is vertical or horizontal
+        //Adjust the grid for each.
         int rotation = getResources().getConfiguration().orientation;
-        if(rotation == getResources().getConfiguration().ORIENTATION_PORTRAIT ) {
+
+        //check if it is a tablet, if pixels are over 800
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        int width = metrics.widthPixels;
+
+        if(rotation == getResources().getConfiguration().ORIENTATION_PORTRAIT
+                && width < 1081) {
+            //handsets in Portrait
             GridLayoutManager layoutManager =
                     new GridLayoutManager(this, 4, GridLayoutManager.VERTICAL, false);
             int spacingInPx = 5;
             mRecyclerView.addItemDecoration(new ItemDecoration(spacingInPx));
             mRecyclerView.setLayoutManager(layoutManager);
             mRecyclerView.setHasFixedSize(true);
-        }else{
+        }else if (rotation == getResources().getConfiguration().ORIENTATION_LANDSCAPE
+                && width < 1081) {
+            //handsets in Landscape
             GridLayoutManager layoutManager =
                     new GridLayoutManager(this, 6, GridLayoutManager.VERTICAL, false);
             int spacingInPx = 5;
             mRecyclerView.addItemDecoration(new ItemDecoration(spacingInPx));
             mRecyclerView.setLayoutManager(layoutManager);
             mRecyclerView.setHasFixedSize(true);
+        } else if(rotation == getResources().getConfiguration().ORIENTATION_PORTRAIT
+                && width > 1081){
+            //Tablets in Portrait
+            GridLayoutManager layoutManager =
+                    new GridLayoutManager(this, 6, GridLayoutManager.VERTICAL, false);
+            int spacingInPx = 10;
+            mRecyclerView.addItemDecoration(new ItemDecoration(spacingInPx));
+            mRecyclerView.setLayoutManager(layoutManager);
+            mRecyclerView.setHasFixedSize(true);
+
+        }else{
+            //tablets in Portrait
+            GridLayoutManager layoutManager =
+                    new GridLayoutManager(this, 8, GridLayoutManager.VERTICAL, false);
+            int spacingInPx = 10;
+            mRecyclerView.addItemDecoration(new ItemDecoration(spacingInPx));
+            mRecyclerView.setLayoutManager(layoutManager);
+            mRecyclerView.setHasFixedSize(true);
+
         }
     }
     private void loadMovies(){

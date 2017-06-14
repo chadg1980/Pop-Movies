@@ -16,6 +16,8 @@ import android.support.constraint.ConstraintSet;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Layout;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
@@ -24,6 +26,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -99,7 +102,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     private Double mVoteAverage;
     private String mPlot;
 
-
+    private boolean mIstablet;
     private final static String LOG_TAG = MovieDetailActivity.class.getName();
 
     @Override
@@ -111,6 +114,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
         mContext = this;
 
+        mIstablet = checkForTablet();
         mRecyclerTrailer = (RecyclerView) findViewById(R.id.rv_trailers);
         mRecyclerTrailer.setLayoutManager(new LinearLayoutManager(this));
 
@@ -122,8 +126,6 @@ public class MovieDetailActivity extends AppCompatActivity {
         //Check if the movie is already in the databse if the item came from a non database area
         movieAlreadyFavorite = false;
         checkIfFavorite();
-
-
 
         mMovieTitle = intent.getStringExtra(MOVIE_TITLE);
         mReleaseDate = intent.getStringExtra(MOVIE_RELEASE_DATE);
@@ -151,32 +153,33 @@ public class MovieDetailActivity extends AppCompatActivity {
         mTV_moviePlot.setText(mPlot);
         getReviews(apiKey, mMovieId);
         getYoutubeKeys(apiKey, mMovieId);
-        moveLineIfPlotIsLongInLandscape();
+        moveLineIfPlotIsLongInLandscapeOrTablet();
 
     }
 
-    private void moveLineIfPlotIsLongInLandscape() {
+    private void moveLineIfPlotIsLongInLandscapeOrTablet() {
         int rotation = getResources().getConfiguration().orientation;
-        if(rotation == getResources().getConfiguration().ORIENTATION_LANDSCAPE ) {
-            mTV_moviePlot.post(new Runnable() {
-                @Override
-                public void run() {
-                    ConstraintLayout constrainLayout = (ConstraintLayout) findViewById(R.id.cl_movie_detail);
-                    int linecount = mTV_moviePlot.getLineCount();
-                    if (linecount <= 3) {
-                        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams)
-                                mTrailerLine.getLayoutParams();
+            if (rotation == getResources().getConfiguration().ORIENTATION_LANDSCAPE || mIstablet) {
+                mTV_moviePlot.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        int minLineCount;
+                        if(mIstablet)
+                            minLineCount = 13;
+                        else
+                            minLineCount = 4;
+                        ConstraintLayout constrainLayout = (ConstraintLayout) findViewById(R.id.cl_movie_detail);
+                        int linecount = mTV_moviePlot.getLineCount();
+                        if (linecount < 4) {
+                            ConstraintSet set = new ConstraintSet();
+                            set.clone(constrainLayout);
+                            set.connect(mTrailerLine.getId(), ConstraintSet.TOP, mIV_moviePoster.getId(), ConstraintSet.BOTTOM, 40);
+                            set.applyTo(constrainLayout);
 
-                        ConstraintSet set = new ConstraintSet();
-                        set.clone(constrainLayout);
-                        set.connect(mTrailerLine.getId(), ConstraintSet.TOP, mIV_moviePoster.getId(), ConstraintSet.BOTTOM, 40);
-                        set.applyTo(constrainLayout);
-
+                        }
                     }
-                }
-            });
-        }
-
+                });
+            }
     }
 
     /**
@@ -280,6 +283,19 @@ public class MovieDetailActivity extends AppCompatActivity {
         } else {
             Log.e(LOG_TAG, "ROWS DELETED  = " + rowsDeleted + ", movie removed from favorite ");
         }
+    }
+    /*
+    * Check to see if the device is a tablet or handset
+    * So we can change the display
+    * **/
+    private boolean checkForTablet(){
+
+        ScrollView detail = (ScrollView) findViewById(R.id.sv_movie_detail_item);
+        String x = (String) detail.getTag();
+        Log.e(LOG_TAG, "What is x " + x);
+        if(x.equals("Tablet"))
+            return true;
+        return false;
     }
 }
 

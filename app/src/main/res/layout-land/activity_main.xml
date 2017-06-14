@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 
     xmlns:tools="http://schemas.android.com/tools"
@@ -23,7 +22,6 @@
         android:padding="16dp"
         android:text="@string/error_message"
         android:textSize="20dp"
-        android:background="@color/colorAccent"
         android:visibility="invisible"/>
 
     <ProgressBar
@@ -32,6 +30,4 @@
         android:layout_height="42dp"
         android:layout_centerInParent="true"
         android:visibility="invisible" />
-
 </RelativeLayout>
-

@@ -11,6 +11,8 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -43,6 +45,8 @@ import butterknife.ButterKnife;
 
 import static android.R.attr.duration;
 import static android.R.attr.id;
+import static android.R.attr.layout;
+import static android.R.attr.rotation;
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 import static com.h.chad.PopMovies.MovieAdapter.API_KEY;
 import static com.h.chad.PopMovies.MovieAdapter.MOVIE_ID;
@@ -74,6 +78,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     @BindView(R.id.trailer_line) View mTrailerLine;
     @BindView(R.id.tv_no_review) TextView mNoReview;
     @BindView(R.id.tb_add_favorite) ToggleButton mAddFavorite;
+    @BindView(R.id.tv_no_trailer) TextView mNoTrailer;
 
     RecyclerView mRecyclerTrailer;
     RecyclerView getmRecyclerReview;
@@ -118,16 +123,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         movieAlreadyFavorite = false;
         checkIfFavorite();
 
-        mAddFavorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
-                    saveMovieToFavorite(mAddFavorite);
-                }else {
-                    removeMovieFromFavorite(mAddFavorite);
-                }
-            }
-        });
+
 
         mMovieTitle = intent.getStringExtra(MOVIE_TITLE);
         mReleaseDate = intent.getStringExtra(MOVIE_RELEASE_DATE);
@@ -154,7 +150,35 @@ public class MovieDetailActivity extends AppCompatActivity {
         mRB_movieVoteAverage.setRating(mVoteAverage.floatValue());
         mTV_moviePlot.setText(mPlot);
         getReviews(apiKey, mMovieId);
+        getYoutubeKeys(apiKey, mMovieId);
+        moveLineIfPlotIsLongInLandscape();
+
     }
+
+    private void moveLineIfPlotIsLongInLandscape() {
+        int rotation = getResources().getConfiguration().orientation;
+        if(rotation == getResources().getConfiguration().ORIENTATION_LANDSCAPE ) {
+            mTV_moviePlot.post(new Runnable() {
+                @Override
+                public void run() {
+                    ConstraintLayout constrainLayout = (ConstraintLayout) findViewById(R.id.cl_movie_detail);
+                    int linecount = mTV_moviePlot.getLineCount();
+                    if (linecount <= 3) {
+                        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams)
+                                mTrailerLine.getLayoutParams();
+
+                        ConstraintSet set = new ConstraintSet();
+                        set.clone(constrainLayout);
+                        set.connect(mTrailerLine.getId(), ConstraintSet.TOP, mIV_moviePoster.getId(), ConstraintSet.BOTTOM, 40);
+                        set.applyTo(constrainLayout);
+
+                    }
+                }
+            });
+        }
+
+    }
+
     /**
      * Set up the toggle switch, if the movie_id is in the database, it will be set to on.
      * Also the _ID from the database table will be put in a variable so the proper
@@ -195,11 +219,9 @@ public class MovieDetailActivity extends AppCompatActivity {
         new FetchYoutubeKeys(){
             @Override
             protected void onPostExecute(ArrayList<String> results) {
-
                 if(results.size() > 0) {
-                    mTrailerLabel.setVisibility(View.VISIBLE);
+                    mNoTrailer.setVisibility(View.GONE);
                     mRecyclerTrailer.setVisibility(View.VISIBLE);
-                    mTrailerLine.setVisibility(View.VISIBLE);
                     mTrailerAdapter = new TrailerAdapter(results, mContext);
                     mRecyclerTrailer.setItemViewCacheSize(20);
                     mRecyclerTrailer.setDrawingCacheEnabled(true);
@@ -235,7 +257,6 @@ public class MovieDetailActivity extends AppCompatActivity {
     private void saveMovieToFavorite(ToggleButton tb_favorite){
             ContentValues values = new ContentValues();
             mAddFavorite.setTextOn("Favorite");
-            int duration = Toast.LENGTH_SHORT;
             values.put(FavoritesEntry.MOVIE_ID, mMovieId);
             values.put(FavoritesEntry.TITLE, mMovieTitle);
             values.put(FavoritesEntry.RELEASE_DATE, mReleaseDate);

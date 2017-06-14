@@ -27,6 +27,7 @@
 
     <string name="review_label">Reviews:</string>
     <string name="no_review">No Reviews Yet</string>
+    <string name="no_trailers">No Trailers</string>
     <string name="review_read_more">click to read more</string>
     <string name="review_read_less">click to read less</string>
 

@@ -88,7 +88,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
                     .placeholder(R.drawable.ic_play_circle_outline_black_24dp)
                     .into(mMovieThumbnail);
             int trailerNumber = listIndex+1;
-            mTrailerTitle.setText(mContext.getString(R.string.trailer_name) + trailerNumber);
+            mTrailerTitle.setText(mContext.getString(R.string.trailer_name) +" " + trailerNumber);
 
             holder.mMovieThumbnail.setOnClickListener(new View.OnClickListener() {
                 @Override

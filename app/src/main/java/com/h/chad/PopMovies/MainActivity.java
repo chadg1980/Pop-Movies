@@ -1,13 +1,14 @@
 package com.h.chad.PopMovies;
 
 import android.content.Context;
-import android.content.Loader;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -19,27 +20,18 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import android.app.LoaderManager;
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.support.v4.widget.CursorAdapter;
 
 import com.facebook.stetho.Stetho;
-import com.h.chad.PopMovies.MovieAdapter;
-import com.h.chad.PopMovies.data.FavoritesContract;
+import com.facebook.stetho.inspector.protocol.module.Database;
 import com.h.chad.PopMovies.utils.FetchMovieTask;
 import com.h.chad.PopMovies.utils.ItemDecoration;
-import com.h.chad.PopMovies.utils.JSONUtils;
 import com.h.chad.PopMovies.utils.NetworkUtils;
-import com.h.chad.PopMovies.R;
 import com.h.chad.PopMovies.data.FavoritesContract.FavoritesEntry;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
-
-import static android.R.attr.data;
-import static android.os.Build.VERSION_CODES.M;
+import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
@@ -47,8 +39,9 @@ public class MainActivity extends AppCompatActivity implements
     private static final String LOG_TAG = MainActivity.class.getName();
 
     private RecyclerView mRecyclerView;
-    private ProgressBar mLoadingIndicator;
-    private TextView mErrorMessage;
+    @BindView(R.id.pb_loading_bar) ProgressBar mLoadingIndicator;
+    @BindView(R.id.tv_error_message) TextView mErrorMessage;
+
     private Context mContext;
     private String mNetworkErrorMessage;
     private boolean mHasKey;
@@ -57,13 +50,12 @@ public class MainActivity extends AppCompatActivity implements
     private String mListType;
     MovieAdapter mMovieAdapter;
 
-    //Constance for savedInstanceStates
+    //Constance for savedInstanceStates Keys
     private String SAVED_FAVORITE_BOOL = "isFavoriteActive";
     private String SAVED_LIST_TYPE = "listType";
 
-
     //Key is redcted for security purposes.
-    // A key can be aquired at https://www.themoviedb.org/documentation/api
+    //A key can be aquired at https://www.themoviedb.org/documentation/api
     //private String mApiPrivateKey;
     private String mNoKeyErrorMessage;
 
@@ -76,11 +68,9 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         setContentView(R.layout.activity_main);
-        final Context context = getApplicationContext();
-        mContext = context;
-        mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_bar);
+        ButterKnife.bind(this);
+        mContext = getApplicationContext();
         mLoadingIndicator.setVisibility(View.VISIBLE);
-        mErrorMessage = (TextView) findViewById(R.id.tv_error_message);
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_Movies);
         mHasKey = true;
         mNetworkErrorMessage = mContext.getString(R.string.network_error);
@@ -96,35 +86,41 @@ public class MainActivity extends AppCompatActivity implements
             mHasKey = false;
             showSpecificError(mNoKeyErrorMessage);
         } else {
-            //making popular by default so no null values get sent to the API call
+
             if (mListType == null) {
+                //making popular by default so no null values get sent to the API call
                 mListType = NetworkUtils.POPULAR;
             }
+
             //Stetho debug tools
-            Stetho.initialize(
-                    Stetho.newInitializerBuilder(context)
-                            .enableWebKitInspector(Stetho.defaultInspectorModulesProvider(context))
-                            .build());
+        /*
+        Stetho.initialize(
+                Stetho.newInitializerBuilder(context)
+                        .enableWebKitInspector(Stetho.defaultInspectorModulesProvider(context))
+                        .build());
+                        */
             //END Stetho debug tools
 
             //Check for a network connection
             //Favorite is a database call, so if favortites is active, then we don't need to show
             //a network error.
-            boolean isConnected = checkConnection();
-            if (!isConnected && !mFavoritesIsActive) {
-                showSpecificError(mNetworkErrorMessage);
-
-            }else if((!isConnected || isConnected) && mFavoritesIsActive){
+            if (mFavoritesIsActive) {
                 setupRecyclerView();
                 loadMoviesFavoriteMoviesFromCursor();
-            }
-            else {
-                //If connection is good, we set up the recycler view then load the movies
-                setupRecyclerView();
-                loadMovies();
+            } else {
+                boolean isConnected = checkConnection();
+                if (!isConnected && !mFavoritesIsActive) {
+                    showSpecificError(mNetworkErrorMessage);
+
+                } else {
+                    //If connection is good, we set up the recycler view then load the movies
+                    setupRecyclerView();
+                    loadMovies();
+                }
             }
         }
     }
+
     //Checks for a connection, used in onCreate and when the settings are switched
     boolean checkConnection(){
         ConnectivityManager cm =
@@ -138,12 +134,22 @@ public class MainActivity extends AppCompatActivity implements
      * and called from the oncreate method
      * */
     private void setupRecyclerView(){
-        GridLayoutManager layoutManager =
-                new GridLayoutManager(this, 4, GridLayoutManager.VERTICAL, false);
-        int spacingInPx = 5;
-        mRecyclerView.addItemDecoration(new ItemDecoration(spacingInPx));
-        mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.setHasFixedSize(true);
+        int rotation = getResources().getConfiguration().orientation;
+        if(rotation == getResources().getConfiguration().ORIENTATION_PORTRAIT ) {
+            GridLayoutManager layoutManager =
+                    new GridLayoutManager(this, 4, GridLayoutManager.VERTICAL, false);
+            int spacingInPx = 5;
+            mRecyclerView.addItemDecoration(new ItemDecoration(spacingInPx));
+            mRecyclerView.setLayoutManager(layoutManager);
+            mRecyclerView.setHasFixedSize(true);
+        }else{
+            GridLayoutManager layoutManager =
+                    new GridLayoutManager(this, 6, GridLayoutManager.VERTICAL, false);
+            int spacingInPx = 5;
+            mRecyclerView.addItemDecoration(new ItemDecoration(spacingInPx));
+            mRecyclerView.setLayoutManager(layoutManager);
+            mRecyclerView.setHasFixedSize(true);
+        }
     }
     private void loadMovies(){
         showData();
@@ -151,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements
     }
     private void loadMoviesFavoriteMoviesFromCursor(){
         showData();
-        getLoaderManager().initLoader(URL_LOADER, null, this);
+        getSupportLoaderManager().initLoader(URL_LOADER, null, this);
     }
 
     //Create the options menu
@@ -183,15 +189,15 @@ public class MainActivity extends AppCompatActivity implements
                 return super.onOptionsItemSelected(item);
         }
         boolean isConnected = checkConnection();
-        if(!mHasKey) {
-            showSpecificError(mNoKeyErrorMessage);
-        }
-        else if (!isConnected && !mFavoritesIsActive) {
-            showSpecificError(mNetworkErrorMessage);
+
+        if(mFavoritesIsActive){
+          loadMoviesFavoriteMoviesFromCursor();
         }else {
-            if(mFavoritesIsActive){
-                loadMoviesFavoriteMoviesFromCursor();
-            }else{
+            if (!mHasKey) {
+                showSpecificError(mNoKeyErrorMessage);
+            } else if (!isConnected) {
+                showSpecificError(mNetworkErrorMessage);
+            } else {
                 loadMovies();
             }
         }
@@ -206,12 +212,13 @@ public class MainActivity extends AppCompatActivity implements
     //shows a secific error message
     private void showSpecificError(String errorType){
         mLoadingIndicator.setVisibility(View.GONE);
+        mRecyclerView.setVisibility(View.GONE);
         mErrorMessage.setText(errorType);
         mErrorMessage.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+    public android.support.v4.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Uri favoriteUri = FavoritesEntry.CONTENT_URI;
 
         String []projection = {
@@ -234,14 +241,14 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        Log.e(LOG_TAG, "onLoadfinished ");
-        if( (cursor == null) || (cursor.getCount() < 1) ){
+    public void onLoadFinished(android.support.v4.content.Loader<Cursor> loader, Cursor cursor) {
+        if( (cursor == null) || (cursor.getCount() <=0) ){
             return;
         }
         ArrayList<Movie> moviesArrayList = new ArrayList<>();
+        cursor.moveToFirst();
 
-        while(cursor.moveToNext()){
+        if (cursor.moveToFirst()) do{
             int movieIdColumnIndex = cursor.getColumnIndex(FavoritesEntry.MOVIE_ID);
             int movieTitleColumnIndex = cursor.getColumnIndex(FavoritesEntry.TITLE);
             int releaseDateColumnIndex = cursor.getColumnIndex(FavoritesEntry.RELEASE_DATE);
@@ -260,23 +267,23 @@ public class MainActivity extends AppCompatActivity implements
             Movie movie = new Movie(movieId, movieTitle, releaseDate, posterPath,
                     voteCount, voteAverage, plot);
             moviesArrayList.add(movie);
-        }
-        Log.e(LOG_TAG, " All cursors added.... ");
+
+        }while(cursor.moveToNext());
+
         mLoadingIndicator.setVisibility(View.INVISIBLE);
         mMovieAdapter= new MovieAdapter(moviesArrayList, mContext);
+
         mRecyclerView.setItemViewCacheSize(20);
         mRecyclerView.setDrawingCacheEnabled(true);
         mRecyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         mRecyclerView.setAdapter(mMovieAdapter);
-        cursor.moveToFirst();
+        mRecyclerView.setVisibility(View.VISIBLE);
 
 
     }
-
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
+    public void onLoaderReset(android.support.v4.content.Loader loader) {
         Log.i(LOG_TAG, "Loader Reset");
-
     }
 
     @Override
@@ -284,11 +291,8 @@ public class MainActivity extends AppCompatActivity implements
         super.onSaveInstanceState(outState);
         outState.putBoolean(SAVED_FAVORITE_BOOL, mFavoritesIsActive);
         outState.putString(SAVED_LIST_TYPE, mListType);
-        Log.e(LOG_TAG, " ON SAVED INSTANCE");
+
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-    }
+
 }

@@ -107,7 +107,7 @@
             app:layout_constraintLeft_toLeftOf="@+id/rb_vote_average"
             app:layout_constraintRight_toRightOf="@+id/tv_average"
             app:layout_constraintTop_toBottomOf="@+id/rb_vote_average"
-            tools:text="Release Year: 2017" />
+            tools:text="@string/release_date_placeholder" />
 
 
         <TextView

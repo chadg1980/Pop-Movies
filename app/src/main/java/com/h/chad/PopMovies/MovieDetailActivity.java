@@ -50,6 +50,7 @@ import static android.R.attr.duration;
 import static android.R.attr.id;
 import static android.R.attr.layout;
 import static android.R.attr.rotation;
+import static android.R.attr.x;
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 import static com.h.chad.PopMovies.MovieAdapter.API_KEY;
 import static com.h.chad.PopMovies.MovieAdapter.MOVIE_ID;
@@ -136,6 +137,16 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         String outOfTen = mContext.getString(R.string.average_out_of_ten);
         String averageVotes = Double.toString(mVoteAverage) + outOfTen;
+        mAddFavorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    saveMovieToFavorite(mAddFavorite);
+                } else {
+                    removeMovieFromFavorite(mAddFavorite);
+                }
+            }
+        });
 
         mTV_movieTitle = (TextView) findViewById(R.id.tv_movie_title);
         mIV_moviePoster = (ImageView) findViewById(R.id.detail_poster);
@@ -153,33 +164,56 @@ public class MovieDetailActivity extends AppCompatActivity {
         mTV_moviePlot.setText(mPlot);
         getReviews(apiKey, mMovieId);
         getYoutubeKeys(apiKey, mMovieId);
-        moveLineIfPlotIsLongInLandscapeOrTablet();
-
+        Log.e(LOG_TAG, "IS a tablet? " + mIstablet);
+        if(!mIstablet)
+            moveLineIfPlotIsLongInLandscapeHandset();
+        else
+            moveLineIfPlotIsLongInLandscapeTablet();
     }
 
-    private void moveLineIfPlotIsLongInLandscapeOrTablet() {
+    private void moveLineIfPlotIsLongInLandscapeHandset() {
         int rotation = getResources().getConfiguration().orientation;
-            if (rotation == getResources().getConfiguration().ORIENTATION_LANDSCAPE || mIstablet) {
-                mTV_moviePlot.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        int minLineCount;
-                        if(mIstablet)
-                            minLineCount = 13;
-                        else
-                            minLineCount = 4;
-                        ConstraintLayout constrainLayout = (ConstraintLayout) findViewById(R.id.cl_movie_detail);
-                        int linecount = mTV_moviePlot.getLineCount();
-                        if (linecount < 4) {
-                            ConstraintSet set = new ConstraintSet();
-                            set.clone(constrainLayout);
-                            set.connect(mTrailerLine.getId(), ConstraintSet.TOP, mIV_moviePoster.getId(), ConstraintSet.BOTTOM, 40);
-                            set.applyTo(constrainLayout);
+        if (rotation == getResources().getConfiguration().ORIENTATION_LANDSCAPE) {
+            mTV_moviePlot.post(new Runnable() {
+                @Override
+                public void run() {
+                    int minLineCount = 4;
+                    ConstraintLayout constrainLayout = (ConstraintLayout) findViewById(R.id.cl_movie_detail);
+                    int linecount = mTV_moviePlot.getLineCount();
+                    if (linecount < minLineCount) {
+                        ConstraintSet set = new ConstraintSet();
+                        set.clone(constrainLayout);
+                        set.connect(mTrailerLine.getId(), ConstraintSet.TOP, mIV_moviePoster.getId(), ConstraintSet.BOTTOM, 40);
+                        set.applyTo(constrainLayout);
 
-                        }
                     }
-                });
-            }
+                }
+            });
+        }
+    }
+    private void moveLineIfPlotIsLongInLandscapeTablet() {
+        int rotation = getResources().getConfiguration().orientation;
+        if (rotation == getResources().getConfiguration().ORIENTATION_PORTRAIT ||
+                rotation == getResources().getConfiguration().ORIENTATION_LANDSCAPE) {
+            mTV_moviePlot.post(new Runnable() {
+                @Override
+                public void run() {
+                    int minLineCount = 8;
+                    ConstraintLayout constrainLayout = (ConstraintLayout)
+                            findViewById(R.id.cl_movie_detail);
+                    int linecount = mTV_moviePlot.getLineCount();
+                    Log.e(LOG_TAG, "Line Count");
+                    if (linecount < minLineCount) {
+                        ConstraintSet set = new ConstraintSet();
+                        set.clone(constrainLayout);
+                        set.connect(mTrailerLine.getId(), ConstraintSet.TOP,
+                                mIV_moviePoster.getId(), ConstraintSet.BOTTOM, 40);
+                        set.applyTo(constrainLayout);
+
+                    }
+                }
+            });
+        }
     }
 
     /**
@@ -289,11 +323,11 @@ public class MovieDetailActivity extends AppCompatActivity {
     * So we can change the display
     * **/
     private boolean checkForTablet(){
-
         ScrollView detail = (ScrollView) findViewById(R.id.sv_movie_detail_item);
-        String x = (String) detail.getTag();
-        Log.e(LOG_TAG, "What is x " + x);
-        if(x.equals("Tablet"))
+        String viewType = (String) detail.getTag();
+        Log.e(LOG_TAG, "View Type " + viewType);
+
+        if (viewType.equals(getString(R.string.tablet)))
             return true;
         return false;
     }

@@ -19,6 +19,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 
@@ -33,6 +35,9 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static android.R.attr.width;
+import static android.R.attr.x;
 
 public class MainActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
@@ -141,12 +146,15 @@ public class MainActivity extends AppCompatActivity implements
         int rotation = getResources().getConfiguration().orientation;
 
         //check if it is a tablet, if pixels are over 800
-        DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        int width = metrics.widthPixels;
+        RelativeLayout detail = (RelativeLayout) findViewById(R.id.rl_main);
+        boolean istablet = false;
+        String viewType = (String) detail.getTag();
+
+        if (viewType.equals(getString(R.string.tablet)))
+            istablet = true;
 
         if(rotation == getResources().getConfiguration().ORIENTATION_PORTRAIT
-                && width < 1081) {
+                && !istablet) {
             //handsets in Portrait
             GridLayoutManager layoutManager =
                     new GridLayoutManager(this, 4, GridLayoutManager.VERTICAL, false);
@@ -155,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements
             mRecyclerView.setLayoutManager(layoutManager);
             mRecyclerView.setHasFixedSize(true);
         }else if (rotation == getResources().getConfiguration().ORIENTATION_LANDSCAPE
-                && width < 1081) {
+                && !istablet) {
             //handsets in Landscape
             GridLayoutManager layoutManager =
                     new GridLayoutManager(this, 6, GridLayoutManager.VERTICAL, false);
@@ -164,7 +172,7 @@ public class MainActivity extends AppCompatActivity implements
             mRecyclerView.setLayoutManager(layoutManager);
             mRecyclerView.setHasFixedSize(true);
         } else if(rotation == getResources().getConfiguration().ORIENTATION_PORTRAIT
-                && width > 1081){
+                && istablet) {
             //Tablets in Portrait
             GridLayoutManager layoutManager =
                     new GridLayoutManager(this, 6, GridLayoutManager.VERTICAL, false);

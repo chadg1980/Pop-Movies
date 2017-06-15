@@ -36,4 +36,9 @@
     <string name="sort_top_rated_menu">Sort by Rating</string>
     <string name="sort_favorite_menu">Sort by Favorite</string>
 
+    <!--view type tags -->
+    <string name="portrait">portrait</string>
+    <string name="landscape">landscape</string>
+    <string name="tablet">tablet</string>
+
 </resources>

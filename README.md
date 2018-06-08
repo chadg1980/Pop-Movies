@@ -1,6 +1,6 @@
 ## Pop Movies part 2 for Android, 
 Pop Movies is project for learning Experience through Udacity's Android Developers NanoDegree
-Pop-Movies pulls data from themviedb API and returns with either Popular Movies or Highly Rated Movies, or movies that are added by the user to a database of favorite movies. The Movie poster can be clicked to show more information about the movie such as PLOT, Movie Title, Trailers, and reviews.
+Pop-Movies pulls data from themoviedb API and returns with either Popular Movies or Highly Rated Movies, or movies that are added by the user to a database of favorite movies. The Movie poster can be clicked to show more information about the movie such as PLOT, Movie Title, Trailers, and reviews.
 
 ## usage
 To get the code run
